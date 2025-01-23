@@ -93,4 +93,4 @@ runs:
           ref: ${{ github.head_ref }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.set_target_env.outputs.TARGET_ENV }}
-          env_url: https://${{ inputs.target_env }}-${{ inputs.pantheon_site }}.pantheonsite.io
+          env_url: https://${{ steps.set_target_env.outputs.TARGET_ENV }}-${{ inputs.pantheon_site }}.pantheonsite.io
