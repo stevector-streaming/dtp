@@ -81,6 +81,7 @@ runs:
           set +e
           terminus self:plugin:install terminus-build-tools-plugin
           git fetch --unshallow origin
+          echo "different place"
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
           terminus build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --create-before-push
