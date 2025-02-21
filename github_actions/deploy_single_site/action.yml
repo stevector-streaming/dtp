@@ -70,6 +70,10 @@ runs:
         with:
           pantheon-machine-token: ${{ inputs.terminus_machine_token }}
 
+
+          # git clone -b patch-1 git@github.com:stevector-streaming/terminus-build-tools-plugin.git
+          # terminus self:plugin:install "./terminus-build-tools-plugin"
+
       - name: Deployment Processing
         shell: bash
         env:
@@ -78,9 +82,9 @@ runs:
         run: |
           #!/bin/bash
           set +e
+          echo "alternative install goes here"
           terminus self:plugin:install terminus-build-tools-plugin
           git fetch --unshallow origin
-          echo "different place"
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
           terminus build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --create-before-push
