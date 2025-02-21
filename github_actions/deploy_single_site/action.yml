@@ -82,8 +82,9 @@ runs:
         run: |
           #!/bin/bash
           set +e
-          echo "alternative install goes here"
-          terminus self:plugin:install terminus-build-tools-plugin
+          git clone -b patch-1 git@github.com:stevector-streaming/terminus-build-tools-plugin.git
+          terminus self:plugin:install "./terminus-build-tools-plugin"
+          echo "alternative install goes here!!!"
           git fetch --unshallow origin
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
