@@ -83,7 +83,7 @@ runs:
           echo "different place"
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
-          terminus build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --create-before-push
+          terminus -n build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
