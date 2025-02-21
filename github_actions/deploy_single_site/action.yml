@@ -82,7 +82,7 @@ runs:
         run: |
           #!/bin/bash
           set +e
-          git clone -b patch-1 https://github.com/stevector-streaming/terminus-build-tools-plugin.git
+          git clone -b wait-after-site-creation https://github.com/stevector-streaming/terminus-build-tools-plugin.git
           terminus self:plugin:install "./terminus-build-tools-plugin"
           echo "alternative install goes here!!!"
           git fetch --unshallow origin
