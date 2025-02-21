@@ -42,7 +42,6 @@ runs:
         run: |
           #!/bin/bash
           set +e
-
           if [ -n "${PR_NUM}" ]; then
             TARGET_ENV="pr-${PR_NUM}"
           else
@@ -79,7 +78,10 @@ runs:
         run: |
           #!/bin/bash
           set +e
-          terminus self:plugin:install terminus-build-tools-plugin
+
+          git clone  -b <branch> git@github.com:stevector-streaming/terminus-build-tools-plugin.git
+
+          terminus self:plugin:install "./terminus-build-tools-plugin"
           git fetch --unshallow origin
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
