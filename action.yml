@@ -78,9 +78,7 @@ runs:
         run: |
           #!/bin/bash
           set +e
-
-          git clone  -b <branch> git@github.com:stevector-streaming/terminus-build-tools-plugin.git
-
+          git clone -b patch-1 git@github.com:stevector-streaming/terminus-build-tools-plugin.git
           terminus self:plugin:install "./terminus-build-tools-plugin"
           git fetch --unshallow origin
           git config --global user.email "GitHubAction@example.com"
