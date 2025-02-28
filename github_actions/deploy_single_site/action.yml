@@ -63,6 +63,8 @@ runs:
         run: |
           #!/bin/bash
           set +e
+          echo "unshallow the repo before pushing to Pantheon because Pantheon will not accept a push from a shallow repo."
+          git fetch --unshallow origin
           echo "todo, add optional arguments to the action for these git config values."
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
