@@ -31,7 +31,6 @@ runs:
     using: 'composite'
     steps:
 
-      - uses: actions/checkout@v2
   
       - run: echo 'path=${{ github.action_path }}/..' >> $GITHUB_OUTPUT
         id: get-path
@@ -48,7 +47,9 @@ runs:
           ls
           pwd
           echo ${{ github.action_path }}
-          cat test.txt
+          ls ${{ github.action_path }}
+          find ${{ github.action_path }}
+          
 
           if [ -n "${PR_NUM}" ]; then
             TARGET_ENV="pr-${PR_NUM}"
@@ -59,48 +60,3 @@ runs:
           echo "::set-output name=TARGET_ENV::$TARGET_ENV"
 
 
-
-      - name: start deployment
-        uses: bobheadxi/deployments@v1
-        id: deployment
-        with:
-          step: start
-          token: ${{ github.token }}
-          env: ${{ steps.set_target_env.outputs.TARGET_ENV }}
-          ref: ${{ github.head_ref }}
-
-      - uses: webfactory/ssh-agent@v0.9.0
-        with:
-            ssh-private-key: ${{ inputs.pantheon_ssh_key }}
-
-      - name: Install Terminus
-        uses: pantheon-systems/terminus-github-actions@main
-        with:
-          pantheon-machine-token: ${{ inputs.terminus_machine_token }}
-
-      - name: Deployment Processing
-        shell: bash
-        env:
-          PANTHEON_SITE: ${{ inputs.pantheon_site }}
-          TARGET_ENV: ${{ steps.set_target_env.outputs.TARGET_ENV }}
-        run: |
-          #!/bin/bash
-          set +e
-          terminus self:plugin:install terminus-build-tools-plugin
-          git fetch --unshallow origin
-          echo "different place"
-          git config --global user.email "GitHubAction@example.com"
-          git config --global user.name "GitHub Action"
-          terminus -n build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes
-
-      - name: Update deployment status
-        uses: bobheadxi/deployments@v1
-        if: always()
-        with:
-          step: finish
-          token: ${{ github.token }}
-          status: ${{ job.status }}
-          ref: ${{ github.head_ref }}
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ steps.set_target_env.outputs.TARGET_ENV }}
-          env_url: https://${{ steps.set_target_env.outputs.TARGET_ENV }}-${{ inputs.pantheon_site }}.pantheonsite.io
