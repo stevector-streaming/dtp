@@ -637,24 +637,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         }
     }
 
-    protected function doInstallSite(
-        $site_env_id,
-        $composer_json = [],
-        $site_install_options = [
-            'account-mail' => '',
-            'account-name' => '',
-            'account-pass' => '',
-            'site-mail' => '',
-            'site-name' => '',
-            'profile' => ''
-        ],
-        $app = 'Drupal'
-        )
-    {
-        $command_template = $this->getInstallCommandTemplate($composer_json, $app);
-        return $this->runCommandTemplateOnRemoteEnv($site_env_id, $command_template, "Install site", $site_install_options);
-    }
-
     protected function runCommandTemplateOnRemoteEnv(
         $site_env_id,
         $command_templates,
