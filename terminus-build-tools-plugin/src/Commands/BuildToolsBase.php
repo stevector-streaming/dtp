@@ -1398,6 +1398,52 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         return $outputLines;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // delete secrets.json related stuff
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Download a copy of the secrets.json file from the appropriate site.
      */
