@@ -32,6 +32,10 @@ runs:
     steps:
 
       - uses: actions/checkout@v2
+  
+      - run: echo 'path=${{ github.action_path }}/..' >> $GITHUB_OUTPUT
+        id: get-path
+        shell: bash
 
       - name: set target_env
         id: set_target_env
