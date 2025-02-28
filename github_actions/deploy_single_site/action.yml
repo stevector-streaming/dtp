@@ -16,18 +16,9 @@ inputs:
     description: ' '
     required: true
 
-  # Eventually we'll need to test not-yet-merge changes in the
-  # Build Tools Plugin. When that happens, we need a mechanism
-  # to install specific versions of Build Tools.
-  # build_tools_version:
-  #   description: ' '
-  #   required: false
-
 runs:
     using: 'composite'
     steps:
-
-
 
       - name: start deployment
         uses: bobheadxi/deployments@v1
@@ -35,7 +26,7 @@ runs:
         with:
           step: start
           token: ${{ github.token }}
-          env: ${{ github.event.pull_request.number }}
+          env: ${{ inputs.target_env }}
           ref: ${{ github.head_ref }}
 
       - uses: webfactory/ssh-agent@v0.9.0
@@ -57,7 +48,6 @@ runs:
         id: get-path
         shell: bash
 
-
       - name: Install Terminus Plugin
         shell: bash
         run: |
@@ -65,8 +55,6 @@ runs:
           set +e
           ls  "${{ github.action_path }}/../../terminus-build-tools-plugin"
           terminus self:plugin:install "${{ github.action_path }}/../../terminus-build-tools-plugin"
-
-
 
       - name: Deployment Processing
         shell: bash
