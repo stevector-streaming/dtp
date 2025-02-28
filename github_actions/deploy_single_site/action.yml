@@ -31,7 +31,11 @@ runs:
     using: 'composite'
     steps:
 
-  
+      - name: Install Terminus
+        uses: pantheon-systems/terminus-github-actions@main
+        with:
+          pantheon-machine-token: ${{ inputs.terminus_machine_token }}
+
       - run: echo 'path=${{ github.action_path }}/..' >> $GITHUB_OUTPUT
         id: get-path
         shell: bash
@@ -49,7 +53,7 @@ runs:
           echo ${{ github.action_path }}
           ls ${{ github.action_path }}
           find ${{ github.action_path }}
-          
+
 
           if [ -n "${PR_NUM}" ]; then
             TARGET_ENV="pr-${PR_NUM}"
@@ -59,4 +63,11 @@ runs:
 
           echo "::set-output name=TARGET_ENV::$TARGET_ENV"
 
+
+      - name: Install Terminus Plugin
+        shell: bash
+        run: |
+          #!/bin/bash
+          set +e
+          terminus self:plugin:install terminus-build-tools-plugin "${{ github.action_path }}/terminus-build-tools-plugin"
 
