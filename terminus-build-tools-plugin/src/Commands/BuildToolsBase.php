@@ -63,25 +63,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         $this->provider_manager = $provider_manager;
     }
 
-    /**
-     * Set GIT_SSH_COMMAND so we can disable strict host key checking. This allows builds to run without pauses
-     * for user input.
-     *
-     * By not specifying a command in the hook below it will apply to any command from this class (or class that
-     * extends this class, such as all of Build Tools).
-     *
-     * @hook init
-     */
-    public function noStrictHostKeyChecking()
-    {
-        // Set the GIT_SSH_COMMAND environment variable to avoid SSH Host Key prompt.
-        // By using putenv, the environment variable won't persist past this PHP run.
-        // Setting the Known Hosts File to /dev/null and the LogLevel to quiet prevents
-        // this from persisting for a user regularly as well as the warning about adding
-        // the SSH key to the known hosts file.
-        putenv("GIT_SSH_COMMAND=ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=QUIET");
-    }
-
     public function providerManager()
     {
         if (!$this->provider_manager) {
@@ -96,32 +77,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         return $this->provider_manager;
     }
 
-    /**
-     * Given a git provider and (optionally) a ci provider, return the
-     *
-     */
-    public function selectCIProvider($git_provider_class_or_alias, $ci_provider_class_or_alias = '')
-    {
-        // If using GitLab, override the CI choice as GitLabCI is the only option.
-        // CircleCI theoretically works with GitLab, but its API will not start
-        // up testing on new projects seamlessly, so we can't really use it here.
-        if ($git_provider_class_or_alias == 'gitlab') {
-            $ci_provider_class_or_alias = 'gitlabci';
-        }
-
-        // If using bitbucket and ci is not explicitly provided,
-        // assume bitbucket pipelines
-        if (($git_provider_class_or_alias == 'bitbucket') && (!$ci_provider_class_or_alias)) {
-            $ci_provider_class_or_alias = 'pipelines';
-        }
-
-        // If nothing was provided and no default was inferred, use Circle.
-        if (!$ci_provider_class_or_alias) {
-            $ci_provider_class_or_alias = 'circleci';
-        }
-
-        return $ci_provider_class_or_alias;
-    }
 
     protected function createGitProvider($git_provider_class_or_alias)
     {
