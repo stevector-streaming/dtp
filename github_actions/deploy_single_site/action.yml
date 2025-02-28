@@ -41,6 +41,9 @@ runs:
         run: |
           #!/bin/bash
           set +e
+          ls
+          pwd
+          cat test.txt
 
           if [ -n "${PR_NUM}" ]; then
             TARGET_ENV="pr-${PR_NUM}"
