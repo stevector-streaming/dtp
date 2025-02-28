@@ -44,8 +44,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
     const PR_BRANCH_DELETE_PATTERN = 'pr-';
     const DEFAULT_DELETE_PATTERN = self::TRANSIENT_CI_DELETE_PATTERN;
     const DEFAULT_WORKFLOW_TIMEOUT = 180;
-    const SECRETS_DIRECTORY = '.build-secrets';
-    const SECRETS_REMOTE_DIRECTORY = 'private/' . self::SECRETS_DIRECTORY;
 
     protected $tmpDirs = [];
 
@@ -639,170 +637,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         }
     }
 
-    protected function doInstallSite(
-        $site_env_id,
-        $composer_json = [],
-        $site_install_options = [
-            'account-mail' => '',
-            'account-name' => '',
-            'account-pass' => '',
-            'site-mail' => '',
-            'site-name' => '',
-            'profile' => ''
-        ],
-        $app = 'Drupal'
-        )
-    {
-        $command_template = $this->getInstallCommandTemplate($composer_json, $app);
-        return $this->runCommandTemplateOnRemoteEnv($site_env_id, $command_template, "Install site", $site_install_options);
-    }
-
-    protected function runCommandTemplateOnRemoteEnv(
-        $site_env_id,
-        $command_templates,
-        $operation_label,
-        $options
-    ) {
-        list($site, $env) = $this->getSiteEnv($site_env_id);
-        $this->log()->notice('{op} on {site}', ['op' => $operation_label, 'site' => $site_env_id]);
-
-        // Set the target environment to sftp mode prior to running the command
-        $this->connectionSet($env, 'sftp');
-
-        foreach ($options as $key => $val) {
-          if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-            $metadata[$key] = $this->escapeArgument($val);
-          }
-        }
-        foreach ((array)$command_templates as $command_template) {
-            $command_line = $this->interpolate($command_template, $metadata);
-            $redacted_metadata = $this->redactMetadata($metadata, ['account-pass']);
-            $redacted_command_line = $this->interpolate($command_template, $redacted_metadata);
-
-            $this->log()->notice(' - {cmd}', ['cmd' => $redacted_command_line]);
-            $result = $this->sendCommandViaSsh(
-                $env,
-                $command_line,
-                function ($type, $buffer) {
-                }
-            );
-            $output = $result['output'];
-            if ($result['exit_code']) {
-                throw new TerminusException('{op} failed with exit code {status}', ['op' => $operation_label, 'status' => $result['exit_code']]);
-            }
-        }
-    }
-
-    /**
-     * Sends a command to an environment via SSH.
-     * We would rather not duplicate this method from Terminus.
-     *
-     * @param string $command The command to be run on the platform
-     */
-    protected function sendCommandViaSsh($env, $command)
-    {
-        $ssh_command = $this->getConnectionString($env) . ' ' . ProcessUtils::escapeArgument($command);
-        return $this->getContainer()->get(LocalMachineHelper::class)->execute(
-            $ssh_command,
-            function ($type, $buffer) {
-                },
-            false
-        );
-    }
-
-    /**
-     * We would rather not duplicate this method from Terminus.
-     *
-     * @return string SSH connection string
-     */
-    private function getConnectionString($env)
-    {
-        $sftp = $env->sftpConnectionInfo();
-        return vsprintf(
-            'ssh -T %s@%s -p %s -o "StrictHostKeyChecking=no" -o "AddressFamily inet"',
-            [$sftp['username'], $sftp['host'], $sftp['port'],]
-        );
-    }
-
-    protected function exportInitialConfiguration($site_env_id, $repositoryDir, $composer_json, $options)
-    {
-        list($site, $env) = $this->getSiteEnv($site_env_id);
-        $command_template = $this->getExportConfigurationTemplate($composer_json);
-        if (empty($command_template)) {
-            return;
-        }
-
-        // Run the 'export configuration' command
-        $this->runCommandTemplateOnRemoteEnv($site_env_id, $command_template, "Export configuration", $options);
-
-        // Commit the changes. Quicksilver is not set up to push these back
-        // to the Git provider from the dev branch, but we don't want to leave these changes
-        // uncommitted.
-        $env->commitChanges('Install site and export configuration.');
-
-        // TODO: How do we know where the configuration will be exported to?
-        // Perhaps we need to export to a temporary directory where we control
-        // the path. Perhaps export to ':tmp/config' instead of ':code/config'.
-        $this->rsync($site_env_id, ':code/config', $repositoryDir);
-
-        $this->passthru("git -C $repositoryDir add config");
-        exec("git -C $repositoryDir status --porcelain", $outputLines, $status);
-        if (!empty($outputLines)) {
-            $this->passthru("git -C $repositoryDir commit -m 'Export configuration'");
-        }
-    }
-
-    /**
-     * Remove sensitive information from a metadata array.
-     */
-    protected function redactMetadata($metadata, $keys_to_redact)
-    {
-        foreach ($keys_to_redact as $key) {
-            $metadata[$key] = '"[REDACTED]"';
-        }
-        return $metadata;
-    }
-
-    /**
-     * Determine the command to use to install the site.
-     */
-    protected function getInstallCommandTemplate($composer_json, $app)
-    {
-        if (isset($composer_json['extra']['build-env']['install-cms'])) {
-            return $composer_json['extra']['build-env']['install-cms'];
-        }
-        if (strtolower($app) === 'wordpress') {
-            return [
-                'wp core install --title={site-name} --url={site-url} --admin_user={account-name} --admin_email={account-mail} --admin_password={account-pass}',
-                'wp option update permalink_structure "/%postname%/"',
-            ];
-        }
-        return 'drush site-install {profile} --yes --account-mail={account-mail} --account-name={account-name} --account-pass={account-pass} --site-mail={site-mail} --site-name={site-name}';
-    }
-
-    /**
-     * Determine the command to use to export configuration.
-     */
-    protected function getExportConfigurationTemplate($composer_json)
-    {
-        if (isset($composer_json['extra']['build-env']['export-configuration'])) {
-            return $composer_json['extra']['build-env']['export-configuration'];
-        }
-
-        return '';
-    }
-
-    /**
-     * Read the composer.json file from the provided site directory.
-     */
-    protected function getComposerJson($siteDir)
-    {
-        $composer_json_file = "$siteDir/composer.json";
-        if (!file_exists($composer_json_file)) {
-            return [];
-        }
-        return json_decode(file_get_contents($composer_json_file), true);
-    }
 
     /**
      * Escape one command-line arg
@@ -1107,8 +941,8 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         }
 
         if (null === $maxWaitInSeconds) {
-            $maxWaitInSecondsEnv = getenv('TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT'); 
-            $maxWaitInSeconds = $maxWaitInSecondsEnv ? $maxWaitInSecondsEnv : self::DEFAULT_WORKFLOW_TIMEOUT; 
+            $maxWaitInSecondsEnv = getenv('TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT');
+            $maxWaitInSeconds = $maxWaitInSecondsEnv ? $maxWaitInSecondsEnv : self::DEFAULT_WORKFLOW_TIMEOUT;
         }
 
         $startWaiting = time();
@@ -1183,7 +1017,7 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         if (!isset($this->git_provider)) {
             $this->git_provider = $this->inferGitProviderFromUrl($buildMetadata['url']);
         }
-        
+
         $this->git_provider->alterBuildMetadata($buildMetadata);
 
         return $buildMetadata;
@@ -1396,60 +1230,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
             throw new TerminusException('Command `{command}` failed with exit code {status}', ['command' => $command, 'status' => $result]);
         }
         return $outputLines;
-    }
-
-    /**
-     * Download a copy of the secrets.json file from the appropriate site.
-     */
-    protected function downloadSecrets($site_env_id, $filename)
-    {
-        $workdir = $this->tempdir();
-        $this->rsync($site_env_id, ":files/" . self::SECRETS_REMOTE_DIRECTORY . "/$filename", $workdir, true);
-
-        if (file_exists("$workdir/$filename"))
-        {
-            $secrets = file_get_contents("$workdir/$filename");
-            $secretValues = json_decode($secrets, true);
-            return $secretValues;
-        }
-
-        return [];
-    }
-
-    /**
-     * Upload a modified secrets.json to the target Pantheon site.
-     */
-    protected function uploadSecrets($site_env_id, $secretValues, $filename)
-    {
-        $workdir = $this->tempdir();
-        mkdir("$workdir/" . self::SECRETS_REMOTE_DIRECTORY, 0777, true);
-
-        file_put_contents("$workdir/" . self::SECRETS_REMOTE_DIRECTORY . "/$filename", json_encode($secretValues));
-        $this->rsync($site_env_id, "$workdir/private", ':files/');
-    }
-
-    protected function writeSecrets($site_env_id, $secretValues, $clear, $file)
-    {
-        $values = [];
-        if (!$clear)
-        {
-            $values = $this->downloadSecrets($site_env_id, $file);
-        }
-
-        $values = array_replace($values, $secretValues);
-
-        $this->uploadSecrets($site_env_id, $values, $file);
-    }
-
-    protected function deleteSecrets($site_env_id, $key, $file)
-    {
-        $secretValues = [];
-        if (!empty($key))
-        {
-            $secretValues = $this->downloadSecrets($site_env_id, $file);
-            unset($secretValues[$key]);
-        }
-        $this->uploadSecrets($site_env_id, $secretValues, $file);
     }
 
     // Create a temporary directory
