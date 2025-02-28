@@ -26,7 +26,6 @@ class EnvCreateCommand extends BuildToolsBase
      * @option label What to name the environment in commit comments
      * @option clone-content Run terminus env:clone-content if the environment is re-used
      * @option db-only Only clone the database when runing env:clone-content
-     * @option notify Do not use this deprecated option. Previously used for a build notify command, currently ignored.
      * @option message Commit message to include when committing assets to Pantheon
      * @option pr-id Post notification comment to a specific PR instead of the commit hash.
      * @option no-git-force set this flag to omit the --force flag from 'git add' and 'git push'
@@ -39,7 +38,6 @@ class EnvCreateCommand extends BuildToolsBase
         $options = [
             'label' => '',
             'clone-content' => false,
-            'notify' => '',
             'db-only' => false,
             'message' => '',
             'pr-id' =>  '',
@@ -70,14 +68,6 @@ class EnvCreateCommand extends BuildToolsBase
             return;
         }
 
-        $env_id = $env->getName();
-
-        $doNotify = false;
-
-        // Fetch the site id also
-        $siteInfo = $site->serialize();
-        $site_id = $siteInfo['id'];
-
         // Check to see if '$multidev' already exists on Pantheon.
         $environmentExists = $site->getEnvironments()->has($multidev);
 
@@ -94,7 +84,6 @@ class EnvCreateCommand extends BuildToolsBase
             // To allow pantheon.yml to be processed, we will
             // create the multidev environment, and then push the code.
             $this->create($site_env_id, $multidev);
-            $doNotify = true;
         }
 
         $metadata = $this->pushCodeToPantheon($site_env_id, $multidev, '', $env_label, $options['message'], $options['no-git-force']);
@@ -105,7 +94,6 @@ class EnvCreateCommand extends BuildToolsBase
             // then there is never a race condition -- the new env is
             // created with the correct files from the specified branch.
             $this->create($site_env_id, $multidev);
-            $doNotify = true;
         }
 
         // Clear the environments, so that they will be re-fetched.
@@ -133,39 +121,6 @@ class EnvCreateCommand extends BuildToolsBase
         // if the user plans on re-installing Drupal.
         if ($environmentExists && $options['clone-content']) {
             $this->cloneContent($target, $env, $options['db-only']);
-        }
-
-        // Set the target environment to sftp mode
-        $this->connectionSet($target, 'sftp');
-
-        // TODO: Push to repo provider
-
-        // Run notification command
-        if ($doNotify == true) {
-            $site_name = $site->getName();
-            $project = $this->projectFromRemoteUrl($metadata['url']);
-            $dashboard_url = "https://dashboard.pantheon.io/sites/{$site_id}#{$multidev}";
-
-            $metadata += [
-                'project' => $project,
-                'site-id' => $site_id,
-                'site' => $site_name,
-                'env' => $multidev,
-                'pr_id' => $pr_id,
-                'label' => $env_label,
-                'dashboard-url' => $dashboard_url,
-                'site-url' => "https://{$multidev}-{$site_name}.pantheonsite.io/",
-                'message' => "Created multidev environment [{$multidev}]({$dashboard_url}) for {$site_name}."
-            ];
-
-            if ( ! empty( $pr_id ) ) {
-                $command = $this->interpolate('terminus build:comment:add:pr --pr_id [[pr_id]] --message [[message]] --site_url [[site-url]]', $metadata);
-            } else {
-                $command = $this->interpolate('terminus build:comment:add:commit --sha [[sha]] --message [[message]] --site_url [[site-url]]', $metadata);
-            }
-
-            // Run notification command. Ignore errors.
-            passthru($command);
         }
     }
 }
