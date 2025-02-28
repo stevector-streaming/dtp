@@ -31,6 +31,25 @@ runs:
     using: 'composite'
     steps:
 
+      - name: start deployment
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ github.token }}
+          env: ${{ steps.set_target_env.outputs.TARGET_ENV }}
+          ref: ${{ github.head_ref }}
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+            ssh-private-key: ${{ inputs.pantheon_ssh_key }}
+
+      # todo, make checkout conditional.
+      # Consumers might have checked out before calling this
+      # composite action.
+      - uses: actions/checkout@v2
+
+
       - name: Install Terminus
         uses: pantheon-systems/terminus-github-actions@main
         with:
@@ -72,3 +91,31 @@ runs:
           ls  "${{ github.action_path }}/../../terminus-build-tools-plugin"
           terminus self:plugin:install "${{ github.action_path }}/../../terminus-build-tools-plugin"
 
+
+
+      - name: Deployment Processing
+        shell: bash
+        env:
+          PANTHEON_SITE: ${{ inputs.pantheon_site }}
+          TARGET_ENV: ${{ steps.set_target_env.outputs.TARGET_ENV }}
+        run: |
+          #!/bin/bash
+          set +e
+          echo "todo, is this unshallow necessary?"
+          git fetch --unshallow origin
+          echo "todo, add optional arguments to the action for these git config values."
+          git config --global user.email "GitHubAction@example.com"
+          git config --global user.name "GitHub Action"
+          terminus -n build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes
+
+      - name: Update deployment status
+        uses: bobheadxi/deployments@v1
+        if: always()
+        with:
+          step: finish
+          token: ${{ github.token }}
+          status: ${{ job.status }}
+          ref: ${{ github.head_ref }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env: ${{ steps.set_target_env.outputs.TARGET_ENV }}
+          env_url: https://${{ steps.set_target_env.outputs.TARGET_ENV }}-${{ inputs.pantheon_site }}.pantheonsite.io
