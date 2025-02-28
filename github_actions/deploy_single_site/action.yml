@@ -31,6 +31,32 @@ runs:
     using: 'composite'
     steps:
 
+
+
+      - name: set target_env
+        id: set_target_env
+        shell: bash
+        env:
+          PR_NUM: ${{ github.event.pull_request.number }}
+        run: |
+          #!/bin/bash
+          set +e
+          ls
+          pwd
+          echo ${{ github.action_path }}
+          ls "${{ github.action_path }}/../../"
+          find ${{ github.action_path }}
+
+
+          if [ -n "${PR_NUM}" ]; then
+            TARGET_ENV="pr-${PR_NUM}"
+          else
+            TARGET_ENV='dev'
+          fi
+
+          echo "::set-output name=TARGET_ENV::$TARGET_ENV"
+
+
       - name: start deployment
         uses: bobheadxi/deployments@v1
         id: deployment
@@ -58,29 +84,6 @@ runs:
       - run: echo 'path=${{ github.action_path }}/..' >> $GITHUB_OUTPUT
         id: get-path
         shell: bash
-
-      - name: set target_env
-        id: set_target_env
-        shell: bash
-        env:
-          PR_NUM: ${{ github.event.pull_request.number }}
-        run: |
-          #!/bin/bash
-          set +e
-          ls
-          pwd
-          echo ${{ github.action_path }}
-          ls "${{ github.action_path }}/../../"
-          find ${{ github.action_path }}
-
-
-          if [ -n "${PR_NUM}" ]; then
-            TARGET_ENV="pr-${PR_NUM}"
-          else
-            TARGET_ENV='dev'
-          fi
-
-          echo "::set-output name=TARGET_ENV::$TARGET_ENV"
 
 
       - name: Install Terminus Plugin
