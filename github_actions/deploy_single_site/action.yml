@@ -69,5 +69,6 @@ runs:
         run: |
           #!/bin/bash
           set +e
-          terminus self:plugin:install terminus-build-tools-plugin "${{ github.action_path }}/terminus-build-tools-plugin"
+          ls  "${{ github.action_path }}/terminus-build-tools-plugin"
+          terminus self:plugin:install "${{ github.action_path }}/terminus-build-tools-plugin"
 
