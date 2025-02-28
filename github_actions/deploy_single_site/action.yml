@@ -51,7 +51,7 @@ runs:
           ls
           pwd
           echo ${{ github.action_path }}
-          ls ${{ github.action_path }}
+          ls "${{ github.action_path }}/../"
           find ${{ github.action_path }}
 
 
@@ -69,6 +69,6 @@ runs:
         run: |
           #!/bin/bash
           set +e
-          ls  "${{ github.action_path }}/terminus-build-tools-plugin"
-          terminus self:plugin:install "${{ github.action_path }}/terminus-build-tools-plugin"
+          ls  "${{ github.action_path }}/../terminus-build-tools-plugin"
+          terminus self:plugin:install "${{ github.action_path }}/../terminus-build-tools-plugin"
 
