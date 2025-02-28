@@ -44,8 +44,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
     const PR_BRANCH_DELETE_PATTERN = 'pr-';
     const DEFAULT_DELETE_PATTERN = self::TRANSIENT_CI_DELETE_PATTERN;
     const DEFAULT_WORKFLOW_TIMEOUT = 180;
-    const SECRETS_DIRECTORY = '.build-secrets';
-    const SECRETS_REMOTE_DIRECTORY = 'private/' . self::SECRETS_DIRECTORY;
 
     protected $tmpDirs = [];
 
@@ -1107,8 +1105,8 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         }
 
         if (null === $maxWaitInSeconds) {
-            $maxWaitInSecondsEnv = getenv('TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT'); 
-            $maxWaitInSeconds = $maxWaitInSecondsEnv ? $maxWaitInSecondsEnv : self::DEFAULT_WORKFLOW_TIMEOUT; 
+            $maxWaitInSecondsEnv = getenv('TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT');
+            $maxWaitInSeconds = $maxWaitInSecondsEnv ? $maxWaitInSecondsEnv : self::DEFAULT_WORKFLOW_TIMEOUT;
         }
 
         $startWaiting = time();
@@ -1183,7 +1181,7 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         if (!isset($this->git_provider)) {
             $this->git_provider = $this->inferGitProviderFromUrl($buildMetadata['url']);
         }
-        
+
         $this->git_provider->alterBuildMetadata($buildMetadata);
 
         return $buildMetadata;
@@ -1396,106 +1394,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
             throw new TerminusException('Command `{command}` failed with exit code {status}', ['command' => $command, 'status' => $result]);
         }
         return $outputLines;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // delete secrets.json related stuff
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Download a copy of the secrets.json file from the appropriate site.
-     */
-    protected function downloadSecrets($site_env_id, $filename)
-    {
-        $workdir = $this->tempdir();
-        $this->rsync($site_env_id, ":files/" . self::SECRETS_REMOTE_DIRECTORY . "/$filename", $workdir, true);
-
-        if (file_exists("$workdir/$filename"))
-        {
-            $secrets = file_get_contents("$workdir/$filename");
-            $secretValues = json_decode($secrets, true);
-            return $secretValues;
-        }
-
-        return [];
-    }
-
-    /**
-     * Upload a modified secrets.json to the target Pantheon site.
-     */
-    protected function uploadSecrets($site_env_id, $secretValues, $filename)
-    {
-        $workdir = $this->tempdir();
-        mkdir("$workdir/" . self::SECRETS_REMOTE_DIRECTORY, 0777, true);
-
-        file_put_contents("$workdir/" . self::SECRETS_REMOTE_DIRECTORY . "/$filename", json_encode($secretValues));
-        $this->rsync($site_env_id, "$workdir/private", ':files/');
-    }
-
-    protected function writeSecrets($site_env_id, $secretValues, $clear, $file)
-    {
-        $values = [];
-        if (!$clear)
-        {
-            $values = $this->downloadSecrets($site_env_id, $file);
-        }
-
-        $values = array_replace($values, $secretValues);
-
-        $this->uploadSecrets($site_env_id, $values, $file);
-    }
-
-    protected function deleteSecrets($site_env_id, $key, $file)
-    {
-        $secretValues = [];
-        if (!empty($key))
-        {
-            $secretValues = $this->downloadSecrets($site_env_id, $file);
-            unset($secretValues[$key]);
-        }
-        $this->uploadSecrets($site_env_id, $secretValues, $file);
     }
 
     // Create a temporary directory
