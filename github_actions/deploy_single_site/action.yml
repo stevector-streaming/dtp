@@ -12,13 +12,9 @@ inputs:
     description: ' '
     required: true
 
-  # Eventually the target_env argument will be needed by those
-  # doing long-running integration multidevs. But for now
-  # it is preferable to have as few required, or even available arguments
-  # as possible.
-  # target_env:
-  #   description: ' '
-  #   required: true
+  target_env:
+    description: ' '
+    required: true
 
   # Eventually we'll need to test not-yet-merge changes in the
   # Build Tools Plugin. When that happens, we need a mechanism
@@ -33,37 +29,13 @@ runs:
 
 
 
-      - name: set target_env
-        id: set_target_env
-        shell: bash
-        env:
-          PR_NUM: ${{ github.event.pull_request.number }}
-        run: |
-          #!/bin/bash
-          set +e
-          ls
-          pwd
-          echo ${{ github.action_path }}
-          ls "${{ github.action_path }}/../../"
-          find ${{ github.action_path }}
-
-
-          if [ -n "${PR_NUM}" ]; then
-            TARGET_ENV="pr-${PR_NUM}"
-          else
-            TARGET_ENV='dev'
-          fi
-
-          echo "::set-output name=TARGET_ENV::$TARGET_ENV"
-
-
       - name: start deployment
         uses: bobheadxi/deployments@v1
         id: deployment
         with:
           step: start
           token: ${{ github.token }}
-          env: ${{ steps.set_target_env.outputs.TARGET_ENV }}
+          env: ${{ github.event.pull_request.number }}
           ref: ${{ github.head_ref }}
 
       - uses: webfactory/ssh-agent@v0.9.0
@@ -100,7 +72,7 @@ runs:
         shell: bash
         env:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
-          TARGET_ENV: ${{ steps.set_target_env.outputs.TARGET_ENV }}
+          TARGET_ENV: ${{ inputs.target_env }}
         run: |
           #!/bin/bash
           set +e
@@ -120,5 +92,5 @@ runs:
           status: ${{ job.status }}
           ref: ${{ github.head_ref }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ steps.set_target_env.outputs.TARGET_ENV }}
-          env_url: https://${{ steps.set_target_env.outputs.TARGET_ENV }}-${{ inputs.pantheon_site }}.pantheonsite.io
+          env: ${{ inputs.target_env }}
+          env_url: https://${{ inputs.target_env }}-${{ inputs.pantheon_site }}.pantheonsite.io
