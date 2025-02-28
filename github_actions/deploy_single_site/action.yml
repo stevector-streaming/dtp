@@ -43,22 +43,16 @@ runs:
       # composite action.
       - uses: actions/checkout@v2
 
-
       - name: Install Terminus
         uses: pantheon-systems/terminus-github-actions@main
         with:
           pantheon-machine-token: ${{ inputs.terminus_machine_token }}
-
-      - run: echo 'path=${{ github.action_path }}/..' >> $GITHUB_OUTPUT
-        id: get-path
-        shell: bash
 
       - name: Install Terminus Plugin
         shell: bash
         run: |
           #!/bin/bash
           set +e
-          ls  "${{ github.action_path }}/../../terminus-build-tools-plugin"
           terminus self:plugin:install "${{ github.action_path }}/../../terminus-build-tools-plugin"
 
       - name: Deployment Processing
@@ -69,8 +63,6 @@ runs:
         run: |
           #!/bin/bash
           set +e
-          echo "todo, is this unshallow necessary?"
-          git fetch --unshallow origin
           echo "todo, add optional arguments to the action for these git config values."
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
