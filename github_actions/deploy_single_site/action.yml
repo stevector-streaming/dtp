@@ -43,6 +43,7 @@ runs:
           set +e
           ls
           pwd
+          echo ${{ github.action_path }}
           cat test.txt
 
           if [ -n "${PR_NUM}" ]; then
