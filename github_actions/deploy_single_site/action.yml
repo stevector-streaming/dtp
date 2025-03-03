@@ -68,6 +68,7 @@ runs:
           echo "todo, add optional arguments to the action for these git config values."
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
+          export TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT=300
           terminus -n build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes
 
       - name: Update deployment status

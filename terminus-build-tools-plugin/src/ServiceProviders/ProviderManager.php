@@ -28,7 +28,6 @@ class ProviderManager implements LoggerAwareInterface
 
             '\Pantheon\TerminusBuildTools\ServiceProviders\RepositoryProviders\GitHub\GitHubProvider',
             '\Pantheon\TerminusBuildTools\ServiceProviders\CIProviders\GithubActions\GithubActionsProvider',
-            '\Pantheon\TerminusBuildTools\ServiceProviders\SiteProviders\PantheonProvider',
         ];
     }
 
