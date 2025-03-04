@@ -16,6 +16,10 @@ inputs:
     description: ' '
     required: true
 
+  relative_site_root:
+    description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
+    required: false
+
 ## todo
 ## git email
 ## git name
@@ -54,6 +58,12 @@ runs:
           #!/bin/bash
           set +e
           terminus self:plugin:install "${{ github.action_path }}/../../terminus-build-tools-plugin"
+
+# use site_relative_root in here somewhere. But yikes. Do we also need to create a whole history?
+# I'm back to wanting to clone from Pantheon and move the current working directory on top of this dir.
+# I could clone Pantheon into a local tmp dir. Check out the given branch (make it if it doesn't exist)
+# then move the .git over here. commit and push. Hey that would get rid of the need to unshallow.
+
 
       - name: Deployment Processing
         shell: bash
