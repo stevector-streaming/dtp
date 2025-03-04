@@ -8,9 +8,7 @@ on:
   pull_request:
     types: [opened, edited, synchronize]
 
-
 jobs:
-
 
   build:
     runs-on: ubuntu-latest
