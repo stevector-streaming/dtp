@@ -3,6 +3,7 @@
 namespace Pantheon\TerminusBuildTools\ServiceProviders\RepositoryProviders;
 
 use Psr\Log\LoggerAwareTrait;
+use Pantheon\TerminusBuildTools\Utility\ExecWithRedactionTrait;
 use Robo\Config\Config;
 
 /**
@@ -11,6 +12,7 @@ use Robo\Config\Config;
 abstract class BaseGitProvider
 {
     use LoggerAwareTrait;
+    use ExecWithRedactionTrait;
 
     protected $config;
 

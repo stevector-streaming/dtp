@@ -17,7 +17,33 @@ use Pantheon\TerminusBuildTools\Utility\MultiDevRetention;
  */
 class EnvDeleteCommand extends BuildToolsBase
 {
+    /**
+     * Delete all of the build environments matching the pattern for transient
+     * CI builds, i.e., all multidevs whose name begins with "ci-".
+     *
+     * @command build:env:delete:ci
+     * @aliases build-env:delete:ci
+     *
+     * @param string $site_id Site name
+     * @option keep Number of environments to keep
+     * @option dry-run Only print what would be deleted; do not delete anything.
+     */
+    public function deleteBuildEnvCI(
+        $site_id,
+        $options = [
+            'keep' => 0,
+            'dry-run' => false,
+        ])
+    {
+        $retentionController = $this->createRetentionController($site_id, self::TRANSIENT_CI_DELETE_PATTERN);
+        if (!$retentionController) {
+            return;
+        }
 
+        $retentionController->eligibleIfOldest($options['keep']);
+
+        return $this->confirmAndDeleteEnvironments($retentionController, $options['dry-run']);
+    }
 
     /**
      * Delete all of the build environments matching the pattern for pull
@@ -93,7 +119,7 @@ class EnvDeleteCommand extends BuildToolsBase
                 'Remote repository mismatch: local repository, {gitrepo} is different than the repository {metadatarepo} associated with the site {site}. Would you like to proceed?',
                 ['gitrepo' => $this->projectFromRemoteUrl($remoteUrlFromGit), 'metadatarepo' => $this->projectFromRemoteUrl($remoteUrl), 'site' => $site_id]
             );
-
+            
             if (!$proceed) {
                 return;
             }
