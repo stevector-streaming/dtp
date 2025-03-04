@@ -12,6 +12,8 @@ inputs:
     description: ' '
     required: true
 
+## todo make source env an optional variable
+
   target_env:
     description: ' '
     required: true
