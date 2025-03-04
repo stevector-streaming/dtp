@@ -27,7 +27,7 @@ runs:
 
       - name: start deployment
         uses: bobheadxi/deployments@v1
-        id: deployment_id
+        id: deployment
         with:
           step: start
           token: ${{ github.token }}
@@ -79,7 +79,8 @@ runs:
           token: ${{ github.token }}
           status: ${{ job.status }}
           ref: ${{ github.head_ref }}
+          # todo, how does this work when there is a step above with the id of "deployment" not "deployment_id"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           # todo, the site machine name will need to go in the env name.
-          env: ${{ inputs.target_env }}
+          env: ${{ inputs.target_env }}-${{ inputs.pantheon_site }}
           env_url: https://${{ inputs.target_env }}-${{ inputs.pantheon_site }}.pantheonsite.io
