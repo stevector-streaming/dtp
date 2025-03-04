@@ -78,7 +78,7 @@ runs:
           set +e
 
 
-          cd SITE_ROOT
+          cd ${SITE_ROOT}
 
 
           echo "todo, add optional arguments to the action for these git config values."
