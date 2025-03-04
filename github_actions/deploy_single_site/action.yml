@@ -88,9 +88,10 @@ runs:
 
           git init
           git checkout -b ${TARGET_ENV}
+          git add .
           git commit -m 'what will this do'
 
-         # terminus -n build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes
+          terminus -n build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
