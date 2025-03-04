@@ -90,6 +90,8 @@ runs:
           git checkout -b ${TARGET_ENV}
           git add .
           git commit -m 'what will this do'
+          echo "this origin setting is a hack to get past the 'inferring' of a git provider in build tools"
+          git remote add origin https://github.com
 
           terminus -n build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes
 
