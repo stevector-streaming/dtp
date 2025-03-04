@@ -27,7 +27,7 @@ runs:
 
       - name: start deployment
         uses: bobheadxi/deployments@v1
-        id: deployment
+        id: deployment_id
         with:
           step: start
           token: ${{ github.token }}
@@ -80,5 +80,6 @@ runs:
           status: ${{ job.status }}
           ref: ${{ github.head_ref }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          # todo, the site machine name will need to go in the env name.
           env: ${{ inputs.target_env }}
           env_url: https://${{ inputs.target_env }}-${{ inputs.pantheon_site }}.pantheonsite.io
