@@ -708,6 +708,7 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         while (!$workflow->checkProgress()) {
             $this->log()->notice("Creating multidev {env} for site {site}", ['site' => $site->getName(), 'env' => $multidev]);
             // TODO: Add workflow progress output
+            sleep(10);
         }
         $this->log()->notice($workflow->getMessage());
     }
