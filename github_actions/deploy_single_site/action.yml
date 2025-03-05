@@ -19,6 +19,18 @@ inputs:
   relative_site_root:
     description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
     required: false
+    default: ""
+
+  git_user_name:
+    description: "The name to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
+    required: false
+    default: "GitHub Action Automation"
+
+  git_user_email:
+    description: "The email address to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
+    required: false
+    default: "GitHubAction@example.com"
+
 
   # todo checkout_repo:
   #   description: "A boolean for whether or not this composite step should checkout the git repo. Set to false if a checkout has already been perf"
@@ -62,20 +74,17 @@ runs:
           set +e
           terminus self:plugin:install "${{ github.action_path }}/../../terminus-build-tools-plugin"
 
-
-
       - name: Configure Git User
         shell: bash
         env:
-          PANTHEON_SITE: ${{ inputs.pantheon_site }}
+          PANTHEON_GIT_USER_NAME: ${{ inputs.git_user_name }}
+          PANTHEON_GIT_USER_EMAIL: ${{ inputs.git_user_email }}
+
         run: |
           #!/bin/bash
           set +e
-
-          echo "todo, add optional arguments to the action for these git config values."
-          echo "todo, put these in a different step entirely."
-          git config --global user.email "GitHubAction@example.com"
-          git config --global user.name "GitHub Action"
+          git config --global user.email "${PANTHEON_GIT_USER_EMAIL}"
+          git config --global user.name "${PANTHEON_GIT_USER_NAME}"
 
       - name: Deployment Processing
         shell: bash
@@ -99,7 +108,7 @@ runs:
             git remote add origin https://github.com
           fi
 
-          terminus -n -vvv build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes --create-before-push
+          terminus -n -vvv build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes --create-before-push
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
