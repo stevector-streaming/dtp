@@ -36,15 +36,8 @@ inputs:
     required: false
     default: ""
 
-  ## todo, git commit message. for --message
-
-
   # todo checkout_repo:
   #   description: "A boolean for whether or not this composite step should checkout the git repo. Set to false if a checkout has already been perf"
-
-## todo
-## git email
-## git name
 
 runs:
     using: 'composite'
