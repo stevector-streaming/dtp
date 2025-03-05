@@ -16,6 +16,12 @@ inputs:
     description: ' '
     required: true
 
+  ## todo make source env an optional variable
+  source_env:
+    description: "The environment from which the database and uploaded files will be copied."
+    required: false
+    default: "live"
+
   relative_site_root:
     description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
     required: false
