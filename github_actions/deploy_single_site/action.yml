@@ -60,7 +60,7 @@ runs:
       # Consumers might have checked out before calling this
       # composite action.
       # todo, switch to v4
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Install Terminus
         uses: pantheon-systems/terminus-github-actions@main
@@ -79,14 +79,13 @@ runs:
         env:
           PANTHEON_GIT_USER_NAME: ${{ inputs.git_user_name }}
           PANTHEON_GIT_USER_EMAIL: ${{ inputs.git_user_email }}
-
         run: |
           #!/bin/bash
           set +e
           git config --global user.email "${PANTHEON_GIT_USER_EMAIL}"
           git config --global user.name "${PANTHEON_GIT_USER_NAME}"
 
-      - name: Prepare site root
+      - name: Prepare site root (useful only in testing of the Action itself)
         if: ${{ inputs.relative_site_root != '' }}
         shell: bash
         env:
@@ -129,6 +128,5 @@ runs:
           ref: ${{ github.head_ref }}
           # todo, how does this work when there is a step above with the id of "deployment" not "deployment_id"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          # todo, the site machine name will need to go in the env name.
           env: ${{ inputs.target_env }}-${{ inputs.pantheon_site }}
           env_url: https://${{ inputs.target_env }}-${{ inputs.pantheon_site }}.pantheonsite.io
