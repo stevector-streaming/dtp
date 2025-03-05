@@ -96,33 +96,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         return $this->provider_manager;
     }
 
-    /**
-     * Given a git provider and (optionally) a ci provider, return the
-     *
-     */
-    public function selectCIProvider($git_provider_class_or_alias, $ci_provider_class_or_alias = '')
-    {
-        // If using GitLab, override the CI choice as GitLabCI is the only option.
-        // CircleCI theoretically works with GitLab, but its API will not start
-        // up testing on new projects seamlessly, so we can't really use it here.
-        if ($git_provider_class_or_alias == 'gitlab') {
-            $ci_provider_class_or_alias = 'gitlabci';
-        }
-
-        // If using bitbucket and ci is not explicitly provided,
-        // assume bitbucket pipelines
-        if (($git_provider_class_or_alias == 'bitbucket') && (!$ci_provider_class_or_alias)) {
-            $ci_provider_class_or_alias = 'pipelines';
-        }
-
-        // If nothing was provided and no default was inferred, use Circle.
-        if (!$ci_provider_class_or_alias) {
-            $ci_provider_class_or_alias = 'circleci';
-        }
-
-        return $ci_provider_class_or_alias;
-    }
-
     protected function createGitProvider($git_provider_class_or_alias)
     {
         $this->git_provider = $this->providerManager()->createProvider($git_provider_class_or_alias, \Pantheon\TerminusBuildTools\ServiceProviders\RepositoryProviders\GitProvider::class);
