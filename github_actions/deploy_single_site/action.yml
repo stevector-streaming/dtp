@@ -115,7 +115,10 @@ runs:
           #!/bin/bash
           set +e
 
-          cd ${SITE_ROOT}
+          if [ -n "$SITE_ROOT" ]; then
+            cd ${SITE_ROOT}
+          fi
+          
           terminus -n build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes  --message="${PANTHEON_COMMIT_MESSAGE}"  --create-before-push
 
       - name: Update deployment status
