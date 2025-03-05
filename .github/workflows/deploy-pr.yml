@@ -24,4 +24,4 @@ jobs:
         relative_site_root: ".github/testing_fixtures/dtp-nearly-empty-site"
         git_user_name: "Test Name"
         git_user_email: "test@example.com"
-        git_commit_message: "This is an automated commit message from GitHub Actions"
+        git_commit_message: "This is an automated commit message from GitHub Actions."
