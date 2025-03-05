@@ -20,7 +20,7 @@ inputs:
     description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
     required: false
 
-  # checkout_repo:
+  # todo checkout_repo:
   #   description: "A boolean for whether or not this composite step should checkout the git repo. Set to false if a checkout has already been perf"
 
 ## todo
@@ -47,14 +47,13 @@ runs:
       # todo, make checkout conditional.
       # Consumers might have checked out before calling this
       # composite action.
+      # todo, switch to v4
       - uses: actions/checkout@v2
-
 
       - name: Install Terminus
         uses: pantheon-systems/terminus-github-actions@main
         with:
           pantheon-machine-token: ${{ inputs.terminus_machine_token }}
-
 
       - name: Install Terminus Plugin
         shell: bash
@@ -88,13 +87,10 @@ runs:
 
           export TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT=300
 
-
-
           echo "todo, add optional arguments to the action for these git config values."
+          echo "todo, put these in a different step entirely."
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
-
-
 
           terminus -n -vvv build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes --create-before-push
 

@@ -8,7 +8,6 @@ on:
   pull_request:
     types: [opened, edited, synchronize]
 
-
 jobs:
 
   build:
@@ -21,6 +20,5 @@ jobs:
         pantheon_ssh_key: ${{ secrets.PANTHEON_SSH_KEY }}
         terminus_machine_token: ${{ secrets.TERMINUS_MACHINE_TOKEN }}
         pantheon_site: dtp-nearly-empty-site
-        target_env: "job-${{ github.run_number }}"
+        target_env: "pr-${{ github.event.pull_request.number }}"
         relative_site_root: ".github/testing_fixtures/dtp-nearly-empty-site"
-
