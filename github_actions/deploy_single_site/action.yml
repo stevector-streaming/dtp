@@ -104,7 +104,6 @@ runs:
           if [ -n "$SITE_ROOT" ]; then
             cd ${SITE_ROOT}
             git init
-            git checkout -b ${TARGET_ENV}
             echo "this origin setting is a hack to get past the 'inferring' of a git provider in build tools"
             git remote add origin https://github.com
           fi
