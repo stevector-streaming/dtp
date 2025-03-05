@@ -28,6 +28,7 @@ jobs:
   cleanup_multidevs:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4
     - name: Delete old multidevs
       uses: ./github_actions/delete-closed-pull-request-multidevs
       with:
