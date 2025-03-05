@@ -96,35 +96,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         return $this->provider_manager;
     }
 
-    protected function createGitProvider($git_provider_class_or_alias)
-    {
-        $this->git_provider = $this->providerManager()->createProvider($git_provider_class_or_alias, \Pantheon\TerminusBuildTools\ServiceProviders\RepositoryProviders\GitProvider::class);
-    }
-
-    protected function createCIProvider($ci_provider_class_or_alias)
-    {
-        $this->ci_provider = $this->providerManager()->createProvider($ci_provider_class_or_alias, \Pantheon\TerminusBuildTools\ServiceProviders\CIProviders\CIProvider::class);
-    }
-
-    protected function createSiteProvider($site_provider_class_or_alias)
-    {
-        $this->site_provider = $this->providerManager()->createProvider($site_provider_class_or_alias, \Pantheon\TerminusBuildTools\ServiceProviders\SiteProviders\SiteProvider::class);
-        $this->site_provider->setMachineToken($this->recoverSessionMachineToken());
-        $this->site_provider->setSession($this->session());
-    }
-
-    protected function createProviders($git_provider_class_or_alias, $ci_provider_class_or_alias, $site_provider_class_or_alias = 'pantheon')
-    {
-        if (!empty($ci_provider_class_or_alias)) {
-            $this->createCIProvider($ci_provider_class_or_alias);
-        }
-        if (!empty($git_provider_class_or_alias)) {
-            $this->createGitProvider($git_provider_class_or_alias);
-        }
-        if (!empty($site_provider_class_or_alias)) {
-            $this->createSiteProvider($site_provider_class_or_alias);
-        }
-    }
 
     protected function getUrlFromBuildMetadata($site_name_and_env)
     {
