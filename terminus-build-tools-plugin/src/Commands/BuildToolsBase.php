@@ -18,13 +18,9 @@ use Pantheon\TerminusBuildTools\Utility\UrlParsing;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Robo\Common\ProcessUtils;
-use Composer\Semver\Comparator;
-use Pantheon\TerminusBuildTools\ServiceProviders\CIProviders\CIState;
-use Pantheon\TerminusBuildTools\ServiceProviders\ProviderEnvironment;
 use Pantheon\Terminus\DataStore\FileStore;
 use Pantheon\TerminusBuildTools\Credentials\CredentialManager;
 use Pantheon\TerminusBuildTools\ServiceProviders\ProviderManager;
-use Pantheon\Terminus\Helpers\LocalMachineHelper;
 use Pantheon\Terminus\Commands\WorkflowProcessingTrait;
 use Pantheon\Terminus\Models\Environment;
 
@@ -196,22 +192,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         }
     }
 
-
-    /**
-     * Escape one command-line arg
-     *
-     * @param string $arg The argument to escape
-     * @return RowsOfFields
-     */
-    protected function escapeArgument($arg)
-    {
-        // Omit escaping for simple args.
-        if (preg_match('/^[a-zA-Z0-9_-]*$/', $arg)) {
-            return $arg;
-        }
-        return ProcessUtils::escapeArgument($arg);
-    }
-
     /**
      * Push code to Pantheon -- common routine used by 'create-project', 'create' and 'push-code' commands.
      */
@@ -376,25 +356,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         $org_user = UrlParsing::orgUserFromRemoteUrl($url);
         $repository = UrlParsing::repositoryFromRemoteUrl($url);
         return "$org_user/$repository";
-    }
-
-    protected function getMatchRegex($item, $multidev_delete_pattern)
-    {
-        $match = $item;
-        // If the name is less than the maximum length, then require
-        // an exact match; otherwise, do a 'starts with' test.
-        if (strlen($item) < 11) {
-            $match .= '$';
-        }
-        // Strip the multidev delete pattern from the beginning of
-        // the match. The multidev env name was composed by prepending
-        // the delete pattern to the branch name, so this recovers
-        // the branch name.
-        $match = preg_replace("%$multidev_delete_pattern%", '', $match);
-        // Constrain match to only match from the beginning
-        $match = "^$match";
-
-        return $match;
     }
 
     protected function deleteEnv($env, $deleteBranch = false)
