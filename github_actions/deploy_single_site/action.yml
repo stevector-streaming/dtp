@@ -19,7 +19,6 @@ inputs:
   relative_site_root:
     description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
     required: false
-    default: ""
 
   # checkout_repo:
   #   description: "A boolean for whether or not this composite step should checkout the git repo. Set to false if a checkout has already been perf"
@@ -74,25 +73,30 @@ runs:
           #!/bin/bash
           set +e
 
+          if [ -n "$SITE_ROOT" ]; then
 
-          cd ${SITE_ROOT}
+            cd ${SITE_ROOT}
+            git init
+            git checkout -b ${TARGET_ENV}
+            echo "add and commit probably aren't needed"
+            git add .
+            git commit -m 'what will this do'
+            echo "this origin setting is a hack to get past the 'inferring' of a git provider in build tools"
+            git remote add origin https://github.com
+          fi
+
+
+          export TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT=300
+
 
 
           echo "todo, add optional arguments to the action for these git config values."
           git config --global user.email "GitHubAction@example.com"
           git config --global user.name "GitHub Action"
 
-          
-          export TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT=300
 
-          git init
-          git checkout -b ${TARGET_ENV}
-          git add .
-          git commit -m 'what will this do'
-          echo "this origin setting is a hack to get past the 'inferring' of a git provider in build tools"
-          git remote add origin https://github.com
 
-          terminus -n build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes --create-before-push
+          terminus -n -vvv build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes --create-before-push
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
