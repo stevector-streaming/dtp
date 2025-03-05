@@ -85,8 +85,7 @@ runs:
           git config --global user.email "${PANTHEON_GIT_USER_EMAIL}"
           git config --global user.name "${PANTHEON_GIT_USER_NAME}"
 
-      - name: Prepare site root (useful only in testing of the Action itself)
-        if: ${{ inputs.relative_site_root != '' }}
+      - name: Prepare site root
         shell: bash
         env:
           SITE_ROOT: ${{ inputs.relative_site_root }}
@@ -98,6 +97,8 @@ runs:
             git init
             echo "this origin setting is a hack to get past the 'inferring' of a git provider in build tools"
             git remote add origin https://github.com
+          else
+            git fetch --unshallow origin
           fi
 
       - name: Deployment Processing
@@ -118,7 +119,7 @@ runs:
           if [ -n "$SITE_ROOT" ]; then
             cd ${SITE_ROOT}
           fi
-          
+
           terminus -n build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes  --message="${PANTHEON_COMMIT_MESSAGE}"  --create-before-push
 
       - name: Update deployment status
