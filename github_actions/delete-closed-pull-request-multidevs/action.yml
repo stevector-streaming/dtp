@@ -37,7 +37,6 @@ runs:
           set +e
           terminus self:plugin:install "${{ github.action_path }}/../../terminus-build-tools-plugin"
 
-
       - name: Prepare site root
         shell: bash
         env:
