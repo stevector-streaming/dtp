@@ -62,35 +62,42 @@ runs:
           set +e
           terminus self:plugin:install "${{ github.action_path }}/../../terminus-build-tools-plugin"
 
+
+
+      - name: Configure Git User
+        shell: bash
+        env:
+          PANTHEON_SITE: ${{ inputs.pantheon_site }}
+        run: |
+          #!/bin/bash
+          set +e
+
+          echo "todo, add optional arguments to the action for these git config values."
+          echo "todo, put these in a different step entirely."
+          git config --global user.email "GitHubAction@example.com"
+          git config --global user.name "GitHub Action"
+
       - name: Deployment Processing
         shell: bash
         env:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
           TARGET_ENV: ${{ inputs.target_env }}
           SITE_ROOT: ${{ inputs.relative_site_root }}
+          # todo, might need to make this configurable too.
+          # the default in build tools is 180. But that's regularly failing
+          # on a small personal site.
+          TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT: 300
         run: |
           #!/bin/bash
           set +e
 
           if [ -n "$SITE_ROOT" ]; then
-
             cd ${SITE_ROOT}
             git init
             git checkout -b ${TARGET_ENV}
-            echo "add and commit probably aren't needed"
-            git add .
-            git commit -m 'what will this do'
             echo "this origin setting is a hack to get past the 'inferring' of a git provider in build tools"
             git remote add origin https://github.com
           fi
-
-
-          export TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT=300
-
-          echo "todo, add optional arguments to the action for these git config values."
-          echo "todo, put these in a different step entirely."
-          git config --global user.email "GitHubAction@example.com"
-          git config --global user.name "GitHub Action"
 
           terminus -n -vvv build:env:create $PANTHEON_SITE.live ${TARGET_ENV} --yes --create-before-push
 
