@@ -63,25 +63,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         $this->provider_manager = $provider_manager;
     }
 
-    /**
-     * Set GIT_SSH_COMMAND so we can disable strict host key checking. This allows builds to run without pauses
-     * for user input.
-     *
-     * By not specifying a command in the hook below it will apply to any command from this class (or class that
-     * extends this class, such as all of Build Tools).
-     *
-     * @hook init
-     */
-    public function noStrictHostKeyChecking()
-    {
-        // Set the GIT_SSH_COMMAND environment variable to avoid SSH Host Key prompt.
-        // By using putenv, the environment variable won't persist past this PHP run.
-        // Setting the Known Hosts File to /dev/null and the LogLevel to quiet prevents
-        // this from persisting for a user regularly as well as the warning about adding
-        // the SSH key to the known hosts file.
-        putenv("GIT_SSH_COMMAND=ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=QUIET");
-    }
-
     public function providerManager()
     {
         if (!$this->provider_manager) {
@@ -126,18 +107,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
     }
 
     /**
-     * Terminus requires php 5.5, so we know we have at least that version
-     * if we get this far.  Warn the user if they are using php 5.5, though,
-     * as we recommend php 5.6 or later (e.g. for Drupal 8.3.0.)
-     */
-    protected function warnAboutOldPhp()
-    {
-        if (Comparator::lessThan(PHP_VERSION, '5.6.0')) {
-            $this->log()->warning('You are using php {version}; it is strongly recommended that you use at least php 5.6. Note that older versions of php will not work with newer template projects (e.g. Drupal 8.3.0).', ['version' => PHP_VERSION]);
-        }
-    }
-
-    /**
      * Get the email address of the user that is logged-in to Pantheon
      */
     protected function loggedInUserEmail()
@@ -157,33 +126,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         return $user_data['email'];
     }
 
-    /**
-     * Recover the Pantheon session's machine token.
-     */
-    protected function recoverSessionMachineToken()
-    {
-        $email_address = $this->loggedInUserEmail();
-        if (!$email_address) {
-            return;
-        }
-
-        // Try to look up the machine token using the Terminus API.
-        $tokens = $this->session()->getTokens();
-        $token = $tokens->get($email_address);
-        $machine_token = $token->get('token');
-
-        // If we can't get the machine token through regular Terminus API,
-        // then serialize all of the tokens and see if we can find it there.
-        // This is a workaround for a Terminus bug.
-        if (empty($machine_token)) {
-            $raw_data = $tokens->serialize();
-            if (isset($raw_data[$email_address]['token'])) {
-                $machine_token = $raw_data[$email_address]['token'];
-            }
-        }
-
-        return $machine_token;
-    }
 
     /**
      * Determine whether or not this site can create multidev environments.
