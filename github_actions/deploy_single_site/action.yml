@@ -12,6 +12,8 @@ inputs:
     description: ' '
     required: true
 
+# todo add clone-content as argument
+
   target_env:
     description: ' '
     required: true
