@@ -31,6 +31,11 @@ inputs:
     required: false
     default: "GitHubAction@example.com"
 
+  git_commit_message:
+    description: "A custom commit message to be used with the Git commit that will be pushed to Pantheon. Leaving this Action parameter blank will result in a generic commit message being used. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
+    required: false
+    default: ""
+
   ## todo, git commit message. for --message
 
 
