@@ -35,3 +35,4 @@ jobs:
         pantheon_ssh_key: ${{ secrets.PANTHEON_SSH_KEY }}
         terminus_machine_token: ${{ secrets.TERMINUS_MACHINE_TOKEN }}
         pantheon_site: dtp-nearly-empty-site
+        relative_site_root: ".github/testing_fixtures/dtp-nearly-empty-site"

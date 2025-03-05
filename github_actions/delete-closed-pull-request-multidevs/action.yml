@@ -12,12 +12,10 @@ inputs:
     description: ' '
     required: true
 
-  # Eventually we'll need to test not-yet-merge changes in the
-  # Build Tools Plugin. When that happens, we need a mechanism
-  # to install specific versions of Build Tools.
-  # build_tools_version:
-  #   description: ' '
-  #   required: false
+  relative_site_root:
+    description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
+    required: false
+    default: ""
 
 runs:
     using: 'composite'
@@ -32,7 +30,21 @@ runs:
         with:
           pantheon-machine-token: ${{ inputs.terminus_machine_token }}
 
-      - name: Deployment Processing
+      - name: Prepare site root
+        shell: bash
+        env:
+          SITE_ROOT: ${{ inputs.relative_site_root }}
+        run: |
+          #!/bin/bash
+          set +e
+          if [ -n "$SITE_ROOT" ]; then
+            cd ${SITE_ROOT}
+            git init
+            echo "this origin setting is a hack to get past the 'inferring' of a git provider in build tools"
+            git remote add origin https://github.com
+          fi
+
+      - name: Deleting old multidevs
         shell: bash
         env:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
