@@ -99,6 +99,7 @@ runs:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
           TARGET_ENV: ${{ inputs.target_env }}
           SITE_ROOT: ${{ inputs.relative_site_root }}
+          PANTHEON_COMMIT_MESSAGE: ${{ inputs.git_commit_message }}
           # todo, might need to make this configurable too.
           # the default in build tools is 180. But that's regularly failing
           # on a small personal site.
@@ -115,7 +116,7 @@ runs:
             git remote add origin https://github.com
           fi
 
-          terminus -n build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes  --message="todo, this message should be configurable"  --create-before-push
+          terminus -n build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes  --message="${PANTHEON_COMMIT_MESSAGE}"  --create-before-push
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
