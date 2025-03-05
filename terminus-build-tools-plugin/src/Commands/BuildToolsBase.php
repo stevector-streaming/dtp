@@ -740,46 +740,4 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
         }
         return $outputLines;
     }
-
-    // Create a temporary directory
-    public function tempdir($prefix='php', $dir=FALSE)
-    {
-        $this->registerCleanupFunction();
-        $tempfile=tempnam($dir ? $dir : sys_get_temp_dir(), $prefix ? $prefix : '');
-        if (file_exists($tempfile)) {
-            unlink($tempfile);
-        }
-        mkdir($tempfile);
-        chmod($tempfile, 0700);
-        if (is_dir($tempfile)) {
-            $this->tmpDirs[] = $tempfile;
-            return $tempfile;
-        }
-    }
-
-    /**
-     * Register our shutdown function if it hasn't already been registered.
-     */
-    public function registerCleanupFunction()
-    {
-        static $registered = false;
-        if ($registered) {
-            return;
-        }
-
-        // Insure that $workdir will be deleted on exit.
-        register_shutdown_function([$this, 'cleanup']);
-        $registered = true;
-    }
-
-    // Delete our work directory on exit.
-    public function cleanup()
-    {
-        if (empty($this->tmpDirs)) {
-            return;
-        }
-
-        $fs = new Filesystem();
-        $fs->remove($this->tmpDirs);
-    }
 }
