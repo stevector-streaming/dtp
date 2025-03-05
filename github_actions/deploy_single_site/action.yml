@@ -31,6 +31,8 @@ inputs:
     required: false
     default: "GitHubAction@example.com"
 
+  ## todo, git commit message. for --message
+
 
   # todo checkout_repo:
   #   description: "A boolean for whether or not this composite step should checkout the git repo. Set to false if a checkout has already been perf"
@@ -108,7 +110,7 @@ runs:
             git remote add origin https://github.com
           fi
 
-          terminus -n -vvv build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes --create-before-push
+          terminus -n build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes  --message="todo, this message should be configurable"  --create-before-push
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
