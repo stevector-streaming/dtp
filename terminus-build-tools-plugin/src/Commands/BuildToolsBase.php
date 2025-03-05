@@ -990,19 +990,6 @@ class BuildToolsBase extends TerminusCommand implements SiteAwareInterface, Buil
     }
 
     /**
-     * Return 'true' if the specified file was changed in the provided commit.
-     */
-    protected function commitChangesFile($commit, $file)
-    {
-        // If there are any errors, we will presume that the file in
-        // question does not exist in the repository and treat that as
-        // "file did not change" (in other words, ignore errors).
-        exec("git show --name-only $commit -- $file", $outputLines, $result);
-
-        return ($result == 0) && !empty($outputLines);
-    }
-
-    /**
      * Call passthru; throw an exception on failure.
      *
      * @param string $command
