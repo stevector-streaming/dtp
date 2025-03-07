@@ -72,7 +72,7 @@ runs:
               TARGET_ENV='dev'
             fi
 
-          echo "::set-output name=TARGET_ENV::$TARGET_ENV"
+          echo "PANTHEON_TARGET_ENV=${TARGET_ENV}" >> $GITHUB_ENV
 
 
       - name: start deployment
@@ -114,6 +114,9 @@ runs:
         run: |
           #!/bin/bash
           set +e
+
+         echo "the pantheon target env is ${PANTHEON_TARGET_ENV}"
+
           git config --global user.email "${PANTHEON_GIT_USER_EMAIL}"
           git config --global user.name "${PANTHEON_GIT_USER_NAME}"
 
