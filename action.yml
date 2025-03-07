@@ -12,8 +12,7 @@ inputs:
     description: ' '
     required: true
 
-# todo add clone-content as argument
-
+  # todo add clone-content as argument
 
   target_env:
     description: ' '
@@ -103,7 +102,7 @@ runs:
           set +e
           if [ -n "$SITE_ROOT" ]; then
             cd ${SITE_ROOT}
-            git init
+            git init -b main
             echo "this origin setting is a hack to get past the 'inferring' of a git provider in build tools"
             git remote add origin https://github.com/${{ github.repository }}
           else
