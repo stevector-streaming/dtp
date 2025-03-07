@@ -52,9 +52,6 @@ runs:
     using: 'composite'
     steps:
 
-
-
-
       - name: set target_env
         id: set_target_env
         shell: bash
@@ -65,18 +62,17 @@ runs:
           #!/bin/bash
           set +e
 
-
-
-          if [ -n "${PR_NUM}" ]; then
-            TARGET_ENV="pr-${PR_NUM}"
-          else
-            echo "todo, check that we're on a main/master/default branch"
-            echo "todo, exit with error code if we're on something unaccounted"
-            TARGET_ENV='dev'
-          fi
+            if [ -n "${INPUT_TARGET_ENV}" ]; then
+              TARGET_ENV="${INPUT_TARGET_ENV}"
+            elif [ -n "${PR_NUM}" ]; then
+              TARGET_ENV="pr-${PR_NUM}"
+            else
+              echo "todo, check that we're on a main/master/default branch"
+              echo "todo, exit with error code if we're on something unaccounted"
+              TARGET_ENV='dev'
+            fi
 
           echo "::set-output name=TARGET_ENV::$TARGET_ENV"
-
 
 
       - name: start deployment
