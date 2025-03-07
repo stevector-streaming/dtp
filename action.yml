@@ -81,7 +81,7 @@ runs:
         with:
           step: start
           token: ${{ github.token }}
-          env: ${{ inputs.target_env }}
+          env: ${{ env.PANTHEON_TARGET_ENV }}
           ref: ${{ github.head_ref }}
 
       - uses: webfactory/ssh-agent@v0.9.0
