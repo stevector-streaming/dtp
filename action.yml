@@ -15,8 +15,9 @@ inputs:
   # todo add clone-content as argument
 
   target_env:
-    description: ' '
-    required: true
+    description: 'The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derrived. Pull requests will deploy to environments named "pr-[NUMBER]" and main/master branch commits will deploy to the Pantheon "dev" environment'
+    required: false
+    default: ""
 
   delete_old_environments:
     description: "If set to true, Multidev environments associated with closed pull requests will be deleted after deployment completes. It is recommended to set this parameter to true for workflows that run after merges to the main branch."
@@ -50,6 +51,33 @@ inputs:
 runs:
     using: 'composite'
     steps:
+
+
+
+
+      - name: set target_env
+        id: set_target_env
+        shell: bash
+        env:
+          PR_NUM: ${{ github.event.pull_request.number }}
+          INPUT_TARGET_ENV: ${{ inputs.target_env }}
+        run: |
+          #!/bin/bash
+          set +e
+
+
+
+          if [ -n "${PR_NUM}" ]; then
+            TARGET_ENV="pr-${PR_NUM}"
+          else
+            echo "todo, check that we're on a main/master/default branch"
+            echo "todo, exit with error code if we're on something unaccounted"
+            TARGET_ENV='dev'
+          fi
+
+          echo "::set-output name=TARGET_ENV::$TARGET_ENV"
+
+
 
       - name: start deployment
         uses: bobheadxi/deployments@v1
