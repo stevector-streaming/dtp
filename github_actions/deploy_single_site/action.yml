@@ -145,11 +145,8 @@ runs:
           env: ${{ inputs.target_env }}-${{ inputs.pantheon_site }}
           env_url: https://${{ inputs.target_env }}-${{ inputs.pantheon_site }}.pantheonsite.io
 
-
-
-
       - name: Deleting old multidevs
-        if:
+        if: ${{ inputs.delete_old_environments == 'true' && steps.deployment.outcome == 'success' }}
         shell: bash
         env:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
