@@ -12,7 +12,6 @@ inputs:
     description: ' '
     required: true
 
-
 # todo add clone-content as argument
 
   target_env:
@@ -112,7 +111,7 @@ runs:
 
       - name: Deployment Processing
         shell: bash
-        id: deployment
+        id: deploy_to_pantheon
         env:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
           TARGET_ENV: ${{ inputs.target_env }}
@@ -146,7 +145,7 @@ runs:
           env_url: https://${{ inputs.target_env }}-${{ inputs.pantheon_site }}.pantheonsite.io
 
       - name: Deleting old multidevs
-        if: ${{ inputs.delete_old_environments == 'true' && steps.deployment.outcome == 'success' }}
+        if: ${{ inputs.delete_old_environments == 'true' && steps.deploy_to_pantheon.outcome == 'success' }}
         shell: bash
         env:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
