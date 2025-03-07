@@ -115,7 +115,7 @@ runs:
           #!/bin/bash
           set +e
 
-         echo "the pantheon target env is ${PANTHEON_TARGET_ENV}"
+          echo "the pantheon target env is ${PANTHEON_TARGET_ENV}"
 
           git config --global user.email "${PANTHEON_GIT_USER_EMAIL}"
           git config --global user.name "${PANTHEON_GIT_USER_NAME}"
