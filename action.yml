@@ -141,7 +141,6 @@ runs:
         id: deploy_to_pantheon
         env:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
-          TARGET_ENV: ${{ inputs.target_env }}
           SITE_ROOT: ${{ inputs.relative_site_root }}
           PANTHEON_COMMIT_MESSAGE: ${{ inputs.git_commit_message }}
           # todo, might need to make this configurable too.
@@ -156,7 +155,7 @@ runs:
             cd ${SITE_ROOT}
           fi
 
-          terminus -n build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes --message="${PANTHEON_COMMIT_MESSAGE}"
+          terminus -n build:env:create ${PANTHEON_SITE}.live ${PANTHEON_TARGET_ENV} --yes --message="${PANTHEON_COMMIT_MESSAGE}"
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
@@ -168,8 +167,8 @@ runs:
           ref: ${{ github.head_ref }}
           # todo, how does this work when there is a step above with the id of "deployment" not "deployment_id"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ inputs.target_env }}-${{ inputs.pantheon_site }}
-          env_url: https://${{ inputs.target_env }}-${{ inputs.pantheon_site }}.pantheonsite.io
+          env: ${{ env.PANTHEON_TARGET_ENV }}-${{ inputs.pantheon_site }}
+          env_url: https://${{ env.PANTHEON_TARGET_ENV }}-${{ inputs.pantheon_site }}.pantheonsite.io
 
       - name: Deleting old multidevs
         if: ${{ inputs.delete_old_environments == 'true' && steps.deploy_to_pantheon.outcome == 'success' }}
