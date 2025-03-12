@@ -18,7 +18,6 @@ inputs:
     description: ' '
     required: true
 
-  ## todo make source env an optional variable
   source_env:
     description: "The environment from which the database and uploaded files will be copied."
     required: false
