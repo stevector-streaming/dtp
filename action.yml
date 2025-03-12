@@ -24,6 +24,12 @@ inputs:
     required: false
     default: "live"
 
+  clone_content:
+    description: "If set to true, the database and files directory will be re-cloned from the source environment. When set to false, this data is only copied upon Multidev creations. Setting this variable to true ensures fresh content but adds time to the build process that can be prohibitive for sites with large databases."
+    required: false
+    default: false
+    type: boolean
+
   delete_old_environments:
     description: "If set to true, Multidev environments associated with closed pull requests will be deleted after deployment completes. It is recommended to set this parameter to true for workflows that run after merges to the main branch."
     required: false
