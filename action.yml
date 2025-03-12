@@ -103,10 +103,7 @@ runs:
             echo "Content will NOT be cloned again if the target environment already exists"
           fi
 
-
           echo "PANTHEON_CLONE_CONTENT_FLAG=${CLONE_CONTENT_FLAG}" >> $GITHUB_ENV
-
-
 
       - name: start deployment
         uses: bobheadxi/deployments@v1
