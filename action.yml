@@ -183,7 +183,7 @@ runs:
             cd ${SITE_ROOT}
           fi
 
-          terminus -n build:env:create ${PANTHEON_SITE}.${PANTHEON_SOURCE_ENV} ${PANTHEON_TARGET_ENV} --yes --clone-content   --message="${PANTHEON_COMMIT_MESSAGE}"
+          terminus -n build:env:create ${PANTHEON_SITE}.${PANTHEON_SOURCE_ENV} ${PANTHEON_TARGET_ENV} --yes   --message="${PANTHEON_COMMIT_MESSAGE}"
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
