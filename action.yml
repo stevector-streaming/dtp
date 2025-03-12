@@ -121,6 +121,7 @@ runs:
         env:
           PANTHEON_SITE: ${{ inputs.pantheon_site }}
           TARGET_ENV: ${{ inputs.target_env }}
+          SOURCE_ENV: ${{ inputs.source_env }}
           SITE_ROOT: ${{ inputs.relative_site_root }}
           PANTHEON_COMMIT_MESSAGE: ${{ inputs.git_commit_message }}
           # todo, might need to make this configurable too.
@@ -135,7 +136,7 @@ runs:
             cd ${SITE_ROOT}
           fi
 
-          terminus -n build:env:create ${PANTHEON_SITE}.live ${TARGET_ENV} --yes --message="${PANTHEON_COMMIT_MESSAGE}"
+          terminus -n build:env:create ${PANTHEON_SITE}.${SOURCE_ENV} ${TARGET_ENV} --yes --message="${PANTHEON_COMMIT_MESSAGE}"
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
