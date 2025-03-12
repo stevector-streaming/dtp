@@ -168,7 +168,9 @@ runs:
 
 
           if [ -n "$PANTHEON_CLONE_CONTENT_BOOLEAN" ]; then
+
             export PANTHEON_CLONE_CONTENT_FLAG="--clone-content"
+            echo "{$PANTHEON_CLONE_CONTENT_BOOLEAN}"
             echo "yes, clone content"
           else
             export PANTHEON_CLONE_CONTENT_FLAG=""
