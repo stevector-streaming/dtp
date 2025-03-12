@@ -157,7 +157,7 @@ runs:
           # the default in build tools is 180. But that's regularly failing
           # on a small personal site.
           TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT: 300
-            PANTHEON_CLONE_CONTENT_BOOLEAN: ${{ inputs.clone_content }}
+          PANTHEON_CLONE_CONTENT_BOOLEAN: ${{ inputs.clone_content }}
           run: |
             #!/bin/bash
             set +e
