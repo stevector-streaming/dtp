@@ -157,25 +157,25 @@ runs:
           # the default in build tools is 180. But that's regularly failing
           # on a small personal site.
           TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT: 300
-          PANTHEON_CLONE_CONTENT_BOOLEAN: ${{ inputs.clone_content }}
-        run: |
-          #!/bin/bash
-          set +e
+            PANTHEON_CLONE_CONTENT_BOOLEAN: ${{ inputs.clone_content }}
+          run: |
+            #!/bin/bash
+            set +e
+
+            if [ "$PANTHEON_CLONE_CONTENT_BOOLEAN" == "true" ]; then
+              export PANTHEON_CLONE_CONTENT_FLAG="--clone-content"
+              echo "yes, clone content"
+            else
+              export PANTHEON_CLONE_CONTENT_FLAG=""
+              echo "No, do not re clone content"
+            fi
+
+            echo "${PANTHEON_CLONE_CONTENT_BOOLEAN}"
 
           if [ -n "$SITE_ROOT" ]; then
             cd ${SITE_ROOT}
           fi
 
-
-          if [ -n "$PANTHEON_CLONE_CONTENT_BOOLEAN" ]; then
-
-            export PANTHEON_CLONE_CONTENT_FLAG="--clone-content"
-            echo "{$PANTHEON_CLONE_CONTENT_BOOLEAN}"
-            echo "yes, clone content"
-          else
-            export PANTHEON_CLONE_CONTENT_FLAG=""
-            echo "No, do not re clone content"
-          fi
 
           terminus -n build:env:create ${PANTHEON_SITE}.${PANTHEON_SOURCE_ENV} ${PANTHEON_TARGET_ENV} --yes --message="${PANTHEON_COMMIT_MESSAGE}"
 
