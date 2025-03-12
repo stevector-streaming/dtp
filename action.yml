@@ -62,8 +62,6 @@ runs:
           #!/bin/bash
           set +e
 
-            echo "github ref is ${GITHUB_REF}"
-
             if [ -n "${INPUT_TARGET_ENV}" ]; then
               TARGET_ENV="${INPUT_TARGET_ENV}"
             elif [ -n "${PR_NUM}" ]; then
@@ -80,7 +78,7 @@ runs:
 
       - name: start deployment
         uses: bobheadxi/deployments@v1
-        id: deployment_id
+        id: deployment
         with:
           step: start
           token: ${{ github.token }}
@@ -165,6 +163,7 @@ runs:
           token: ${{ github.token }}
           status: ${{ job.status }}
           ref: ${{ github.head_ref }}
+          # todo, how does this work when there is a step above with the id of "deployment" not "deployment_id"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ env.PANTHEON_TARGET_ENV }}-${{ inputs.pantheon_site }}
           env_url: https://${{ env.PANTHEON_TARGET_ENV }}-${{ inputs.pantheon_site }}.pantheonsite.io
