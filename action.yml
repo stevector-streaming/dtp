@@ -166,8 +166,8 @@ runs:
           ref: ${{ github.head_ref }}
           # todo, how does this work when there is a step above with the id of "deployment" not "deployment_id"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          env: ${{ inputs.target_env }}-${{ inputs.site }}
-          env_url: https://${{ inputs.target_env }}-${{ inputs.site }}.pantheonsite.io
+          env: ${{ env.PANTHEON_TARGET_ENV }}-${{ inputs.site }}
+          env_url: https://${{ env.PANTHEON_TARGET_ENV }}-${{ inputs.site }}.pantheonsite.io
       - name: Deleting old multidevs
         if: ${{ inputs.delete_old_environments == 'true' && steps.deploy_to_pantheon.outcome == 'success' }}
         shell: bash
