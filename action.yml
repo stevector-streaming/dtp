@@ -144,7 +144,6 @@ runs:
         id: deploy_to_pantheon
         env:
           PANTHEON_SITE: ${{ inputs.site }}
-          PANTHEON_TARGET_ENV: ${{ inputs.target_env }}
           PANTHEON_SOURCE_ENV: ${{ inputs.source_env }}
           SITE_ROOT: ${{ inputs.relative_site_root }}
           PANTHEON_COMMIT_MESSAGE: ${{ inputs.git_commit_message }}
