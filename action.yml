@@ -80,7 +80,7 @@ runs:
 
       - name: start deployment
         uses: bobheadxi/deployments@v1
-        id: deployment
+        id: deployment_id
         with:
           step: start
           token: ${{ github.token }}
