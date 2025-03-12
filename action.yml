@@ -86,6 +86,27 @@ runs:
 
           echo "PANTHEON_TARGET_ENV=${TARGET_ENV}" >> $GITHUB_ENV
 
+      - name: Set clone content flag
+        shell: bash
+        id: clone content flag
+        env:
+          CLONE_CONTENT: ${{ inputs.clone_content }}
+        run: |
+          #!/bin/bash
+          set +e
+
+          if [ "$CLONE_CONTENT" == "true" ]; then
+            export CLONE_CONTENT_FLAG="--clone-content"
+            echo "Content will be cloned again if the target environment already exists"
+          else
+            export CLONE_CONTENT_FLAG=""
+            echo "Content will NOT be cloned again if the target environment already exists"
+          fi
+
+
+          echo "PANTHEON_CLONE_CONTENT_FLAG=${CLONE_CONTENT_FLAG}" >> $GITHUB_ENV
+
+
 
       - name: start deployment
         uses: bobheadxi/deployments@v1
@@ -103,7 +124,6 @@ runs:
       # todo, make checkout conditional.
       # Consumers might have checked out before calling this
       # composite action.
-      # todo, switch to v4
       - uses: actions/checkout@v4
 
       - name: Install Terminus
@@ -157,20 +177,11 @@ runs:
           # the default in build tools is 180. But that's regularly failing
           # on a small personal site.
           TERMINUS_BUILD_TOOLS_WORKFLOW_TIMEOUT: 300
-          PANTHEON_CLONE_CONTENT_BOOLEAN: ${{ inputs.clone_content }}
         run: |
           #!/bin/bash
           set +e
 
-          if [ "$PANTHEON_CLONE_CONTENT_BOOLEAN" == "true" ]; then
-            export PANTHEON_CLONE_CONTENT_FLAG="--clone-content"
-            echo "yes, clone content"
-          else
-            export PANTHEON_CLONE_CONTENT_FLAG=""
-            echo "No, do not re clone content"
-          fi
-
-          echo "${PANTHEON_CLONE_CONTENT_BOOLEAN}"
+          echo ${PANTHEON_CLONE_CONTENT_FLAG}
 
           if [ -n "$SITE_ROOT" ]; then
             cd ${SITE_ROOT}
