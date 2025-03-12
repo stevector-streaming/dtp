@@ -88,7 +88,6 @@ runs:
 
       - name: Set clone content flag
         shell: bash
-        id: clone content flag
         env:
           CLONE_CONTENT: ${{ inputs.clone_content }}
         run: |
@@ -184,7 +183,7 @@ runs:
             cd ${SITE_ROOT}
           fi
 
-          terminus -n build:env:create ${PANTHEON_SITE}.${PANTHEON_SOURCE_ENV} ${PANTHEON_TARGET_ENV} --yes --message="${PANTHEON_COMMIT_MESSAGE}"
+          terminus -n build:env:create ${PANTHEON_SITE}.${PANTHEON_SOURCE_ENV} ${PANTHEON_TARGET_ENV} --yes ${PANTHEON_CLONE_CONTENT_FLAG} --message="${PANTHEON_COMMIT_MESSAGE}"
 
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
