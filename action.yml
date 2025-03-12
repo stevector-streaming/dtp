@@ -165,7 +165,6 @@ runs:
           token: ${{ github.token }}
           status: ${{ job.status }}
           ref: ${{ github.head_ref }}
-          # todo, how does this work when there is a step above with the id of "deployment" not "deployment_id"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ env.PANTHEON_TARGET_ENV }}-${{ inputs.pantheon_site }}
           env_url: https://${{ env.PANTHEON_TARGET_ENV }}-${{ inputs.pantheon_site }}.pantheonsite.io
