@@ -1,15 +1,15 @@
 name: deploy-to-pantheon
 inputs:
   pantheon_ssh_key:
-    description: ' '
+    description: 'A private key that corresponds to a public key on Pantheon: https://docs.pantheon.io/ssh-keys'
     required: true
 
   pantheon_machine_token:
-    description: ' '
+    description: "A token for interacting with Pantheon's command line: https://docs.pantheon.io/machine-tokens"
     required: true
 
   pantheon_site:
-    description: ' '
+    description: 'The machine name of your Pantheon site'
     required: true
 
   # todo add clone-content as argument
