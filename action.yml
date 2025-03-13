@@ -34,11 +34,6 @@ inputs:
     default: false
     type: boolean
 
-  relative_site_root:
-    description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
-    required: false
-    default: ""
-
   git_user_name:
     description: "The name to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
     required: false
@@ -51,6 +46,11 @@ inputs:
 
   git_commit_message:
     description: "A custom commit message to be used with the Git commit that will be pushed to Pantheon. Leaving this Action parameter blank will result in a generic commit message being used. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
+    required: false
+    default: ""
+
+  relative_site_root:
+    description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
     required: false
     default: ""
 

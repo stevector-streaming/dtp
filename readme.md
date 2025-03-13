@@ -72,9 +72,7 @@ The optional argument likely to be most commonly used is `delete_old_environment
    required: true
 ```
 
-
 ### Optional Arguments
-
 
 ```yml
  delete_old_environments:
@@ -99,11 +97,6 @@ The optional argument likely to be most commonly used is `delete_old_environment
    default: false
    type: boolean
 
- relative_site_root:
-   description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
-   required: false
-   default: ""
-
  git_user_name:
    description: "The name to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
    required: false
@@ -118,23 +111,35 @@ The optional argument likely to be most commonly used is `delete_old_environment
    description: "A custom commit message to be used with the Git commit that will be pushed to Pantheon. Leaving this Action parameter blank will result in a generic commit message being used. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
    required: false
    default: ""
-```
 
+ relative_site_root:
+   description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
+   required: false
+   default: ""
+
+```
 
 ## Additional recommendations
 
 ### Pin exact version of this action prior to the release of version 1.0.0
 
-_todo: explain_
+Prior to the release of version 1.0.0, it is recommended to pin the version of this action to a specific version in your workflow file.
+This will prevent breaking changes from being introduced to your workflow without your knowledge.
+The most likely breaking change would be a change to the name of the action or the name of the inputs.
+For instance is `delete_old_environments` the best name for that parameter?
+[We might change it.](https://github.com/stevector-streaming/dtp/issues/53)
 
+To pin the version of this action to a specific version, use the `@` symbol followed by the version number in the `uses` key of the step that uses this action.
+For example, to use version 0.2.1 of this action, the step would look like this:
 
-### Additional build steps like `composer install` and `npm build`
-
-
-_todo: explain_
-
-
-
+```yml
+- name: Deploy to Pantheon
+  uses: stevector-streaming/dtp@0.2.1
+  with:
+    ssh_key: ${{ secrets.PANTHEON_SSH_KEY }}
+    machine_token: ${{ secrets.TERMINUS_MACHINE_TOKEN }}
+    site: ${{ vars.PANTHEON_SITE }}
+```
 
 ### Concurrency
 
