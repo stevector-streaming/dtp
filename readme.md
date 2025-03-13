@@ -79,7 +79,7 @@ If set to true, Multidev environments associated with closed pull requests will 
 ```
 
 #### `target_env`
-The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derived. Pull requests will deploy to environments named "pr-[NUMBER]" and main/master branch commits will deploy to the Pantheon "dev" environment'
+The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derived. Pull requests will deploy to environments named "pr-[NUMBER]" and `main`/`master` branch commits will deploy to the Pantheon "dev" environment.
 
 ```yml
    default: ""
@@ -94,6 +94,7 @@ The environment from which the database and uploaded files will be copied.
 ```
 
 #### `clone_content`
+
 If set to true, the database and files directory will be re-cloned from the source environment. When set to false, this data is only copied upon Multidev creations. Setting this variable to true ensures fresh content but adds time to the build process that can be prohibitive for sites with large databases.
 
 ```yml
@@ -102,21 +103,22 @@ If set to true, the database and files directory will be re-cloned from the sour
 ```
 
 #### `git_user_name`
-   The name to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
+
+The name to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git repo.
 
 ```yml
    default: "GitHub Action Automation"
 ```
 
 #### `git_user_email`
-The email address to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo
+The email address to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git repo.
 
 ```yml
    default: "GitHubAction@example.com"
 ```
 
 #### `git_commit_message`
-A custom commit message to be used with the Git commit that will be pushed to Pantheon. Leaving this Action parameter blank will result in a generic commit message being used. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo
+A custom commit message to be used with the Git commit that will be pushed to Pantheon. Leaving this Action parameter blank will result in a generic commit message being used. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git repo.
 
 ```yml
    default: ""
