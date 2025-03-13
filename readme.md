@@ -52,21 +52,19 @@ The optional argument likely to be most commonly used is `delete_old_environment
 
 ### Required Arguments
 
-```yml
- ssh_key:
-   description: 'A private key that corresponds to a public key on Pantheon: https://docs.pantheon.io/ssh-keys'
-   required: true
+
+#### `ssh_key`
+
+A private key that corresponds to a public key on Pantheon: https://docs.pantheon.io/ssh-keys
 
 
- machine_token:
-   description: "A token for interacting with Pantheon's command line: https://docs.pantheon.io/machine-tokens"
-   required: true
+#### `machine_token`
+A token for interacting with Pantheon's command line: https://docs.pantheon.io/machine-tokens
 
 
- site:
-   description: 'The machine name of your Pantheon site'
-   required: true
-```
+#### `site`
+The machine name of your Pantheon site
+
 
 ### Optional Arguments
 
