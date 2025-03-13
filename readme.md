@@ -182,8 +182,7 @@ In this example, coding standards checks are run in parallel with the deployment
 
 Here is an example from a real site that runs a coding standards check in parallel to the deployment job.
 
-_todo screenshot from stevector-composed_
-
+![Parallel and Serial Jobs](.github/documentation/parallel-and-serial-jobs.jpg)
 
 Here is how those jobs are defined in an example site's `.github/workflows/deploy-pr.yml` file:
 
