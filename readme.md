@@ -188,6 +188,36 @@ Here is how those jobs are defined in an example site's `.github/workflows/deplo
 
 ```yml
 
-todo
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Pantheon
+      uses: stevector-streaming/dtp@0.2.1
+      with:
+        ssh_key: ${{ secrets.PANTHEON_SSH_KEY }}
+        machine_token: ${{ secrets.TERMINUS_MACHINE_TOKEN }}
+        site: ${{ vars.PANTHEON_SITE }}
+
+  code_standards_check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Composer install
+      run: composer install
+    - name: Check coding standards
+      run: composer run cs
+
+  playwright:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
+    - uses: ./.github/actions/playwright-against-pantheon
+      with:
+        pantheon_ssh_key: ${{ secrets.PANTHEON_SSH_KEY }}
+        terminus_machine_token: ${{ secrets.TERMINUS_MACHINE_TOKEN }}
+        pantheon_site: ${{ vars.PANTHEON_SITE }}
 
 ```
