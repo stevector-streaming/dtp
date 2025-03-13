@@ -141,18 +141,20 @@ For example, to use version 0.2.1 of this action, the step would look like this:
     site: ${{ vars.PANTHEON_SITE }}
 ```
 
-### Concurrency
 
+### Additional build steps like `composer install` and `npm build`
+
+[_todo: explain_](https://github.com/stevector-streaming/dtp/issues/54)
+
+### Concurrency
 
 Sometimes in the course of development it is normal to push one commit to a branch with a pull request and then push another commit a minute later and then another. Similarly, a team might merge five pull requests in quick succession.
 Depending on the nature of the project, the team might want relevant Workflows to be processed for every single commit.
 
-
 However, for most WordPress and Drupal teams deploying to Pantheon we recommend running no more than one workflow on a branch at a time because this GitHub Action presumes (though does not strictly enforce) that all workflow runs on a given branch will deploy code to the same Pantheon environment.
 Multiple workflows each attempting to deploy code to the same environment at the same time could result in confusing error states or failing automated tests that follow deployment.
 
-
-To ensure that only one build runs at a time for a pull request, include this `concurrency` section in your workflow's yml file
+To ensure that only one build runs at a time for a pull request, include this `concurrency` section in your workflow's yml file:
 
 
 ```yml
@@ -161,9 +163,7 @@ concurrency:
   cancel-in-progress: false
 ```
 
-
 For a workflow that handles only the main branch, that section could be altered to:
-
 
 ```yml
 concurrency:
@@ -172,8 +172,6 @@ concurrency:
 ```
 
 ### Using additional jobs to test your code and the deployed site
-
-
 
 Unit tests and code sniffing/linting generally do not need a fully functioning site in order to execute.
 Therefore you can run them in parallel with the job that deploys the site to Pantheon.
