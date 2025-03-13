@@ -1,4 +1,4 @@
-name: deploy-to-pantheon
+name: Deploy Site to Pantheon
 inputs:
   ssh_key:
     description: 'A private key that corresponds to a public key on Pantheon: https://docs.pantheon.io/ssh-keys'
@@ -13,7 +13,7 @@ inputs:
     required: true
 
   target_env:
-    description: 'The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derrived. Pull requests will deploy to environments named "pr-[NUMBER]" and main/master branch commits will deploy to the Pantheon "dev" environment'
+    description: 'The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derived. Pull requests will deploy to environments named "pr-[NUMBER]" and main/master branch commits will deploy to the Pantheon "dev" environment'
     required: false
     default: ""
 
