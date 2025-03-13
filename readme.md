@@ -68,49 +68,58 @@ The machine name of your Pantheon site
 
 ### Optional Arguments
 
+
+#### `delete_old_environments`
+
+If set to true, Multidev environments associated with closed pull requests will be deleted after deployment completes. It is recommended to set this parameter to true for workflows that run after merges to the main branch.
+
 ```yml
- delete_old_environments:
-   description: "If set to true, Multidev environments associated with closed pull requests will be deleted after deployment completes. It is recommended to set this parameter to true for workflows that run after merges to the main branch."
-   required: false
    default: false
    type: boolean
+```
 
- target_env:
-   description: 'The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derived. Pull requests will deploy to environments named "pr-[NUMBER]" and main/master branch commits will deploy to the Pantheon "dev" environment'
-   required: false
+#### `target_env`
+The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derived. Pull requests will deploy to environments named "pr-[NUMBER]" and main/master branch commits will deploy to the Pantheon "dev" environment'
+
+```yml
    default: ""
+```
 
- source_env:
-   description: "The environment from which the database and uploaded files will be copied."
-   required: false
+#### `source_env`
+
+The environment from which the database and uploaded files will be copied.
+
+```yml
    default: "live"
+```
 
- clone_content:
-   description: "If set to true, the database and files directory will be re-cloned from the source environment. When set to false, this data is only copied upon Multidev creations. Setting this variable to true ensures fresh content but adds time to the build process that can be prohibitive for sites with large databases."
-   required: false
+#### `clone_content`
+If set to true, the database and files directory will be re-cloned from the source environment. When set to false, this data is only copied upon Multidev creations. Setting this variable to true ensures fresh content but adds time to the build process that can be prohibitive for sites with large databases.
+
+```yml
    default: false
    type: boolean
+```
 
- git_user_name:
-   description: "The name to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
-   required: false
+#### `git_user_name`
+   The name to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
+
+```yml
    default: "GitHub Action Automation"
+```
 
- git_user_email:
-   description: "The email address to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
-   required: false
+#### `git_user_email`
+The email address to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo
+
+```yml
    default: "GitHubAction@example.com"
+```
 
- git_commit_message:
-   description: "A custom commit message to be used with the Git commit that will be pushed to Pantheon. Leaving this Action parameter blank will result in a generic commit message being used. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
-   required: false
+#### `git_commit_message`
+A custom commit message to be used with the Git commit that will be pushed to Pantheon. Leaving this Action parameter blank will result in a generic commit message being used. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo
+
+```yml
    default: ""
-
- relative_site_root:
-   description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
-   required: false
-   default: ""
-
 ```
 
 ## Additional recommendations
