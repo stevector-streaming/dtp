@@ -127,6 +127,10 @@ jobs:
 
 ## Additional recommendations
 
+### Pin exact version of this action prior to the release of version 1.0.0
+
+_todo: explain_
+
 
 ### Additional build steps like `composer install` and `npm build`
 
@@ -166,18 +170,25 @@ concurrency:
   cancel-in-progress: false
 ```
 
-### Testing Jobs
+### Using additional jobs to test your code and the deployed site
 
 
-#### Unit Tests: run in parallel with the a `build` job
+
+Unit tests and code sniffing/linting generally do not need a fully functioning site in order to execute.
+Therefore you can run them in parallel with the job that deploys the site to Pantheon.
+End to end tests that depend on a fully functioning site should wait for the job that deploys to complete so that the tests can run against the deployed site.
+
+In this example, coding standards checks are run in parallel with the deployment job and tests written in playwright which check customized CMS functionality run after the deployment completes.
+
+Here is an example from a real site that runs a coding standards check in parallel to the deployment job.
+
+_todo screenshot from stevector-composed_
 
 
-_todo: explain._
+Here is how those jobs are defined in an example site's `.github/workflows/deploy-pr.yml` file:
 
+```yml
 
-#### End-to-End: Run in sequence after a `build` job
+todo
 
-
-_todo: explain._
-
-
+```
