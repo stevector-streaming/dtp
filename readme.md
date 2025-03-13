@@ -164,7 +164,7 @@ For a workflow that handles only the main branch, that section could be altered 
 concurrency:
   group: ${{ github.workflow }}-main
   cancel-in-progress: false
-
+```
 
 ### Testing Jobs
 
