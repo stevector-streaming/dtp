@@ -12,8 +12,6 @@ inputs:
     description: 'The machine name of your Pantheon site'
     required: true
 
-  # todo add clone-content as argument
-
   target_env:
     description: 'The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derrived. Pull requests will deploy to environments named "pr-[NUMBER]" and main/master branch commits will deploy to the Pantheon "dev" environment'
     required: false
