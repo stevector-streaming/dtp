@@ -9,15 +9,11 @@ It is meant to be used in workflows that run upon pushes to Pull Requests and pu
 
 When running workflow triggered by a pull request, this action will create a [Multidev environment](https://docs.pantheon.io/guides/multidev) and deploy code to it.
 
-
-TODO - Diagram
-
+![Deploying a PR to a Pantheon Multidev](.github/documentation/diagram--deploying-pr.png)
 
 When running on workflows triggered by merges/pushes to the `main` branch this action will deploy code to [the Pantheon `Dev` environment](https://docs.pantheon.io/pantheon-workflow).
 
-
-TODO - Diagram
-
+![Deploying main to Pantheon](.github/documentation/diagram--deploying-main.png)
 
 ## Basic Usage
 
