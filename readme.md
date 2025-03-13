@@ -81,7 +81,7 @@ If set to true, Multidev environments associated with closed pull requests will 
 ```
 
 #### `target_env`
-The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derived. Pull requests will deploy to environments named "pr-[NUMBER]" and `main`/`master` branch commits will deploy to the Pantheon "dev" environment.
+The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derived. Pull requests will deploy to environments named `pr-${NUMBER}` and `main`/`master` branch commits will deploy to the Pantheon "dev" environment.
 
 ```yml
    default: ""
