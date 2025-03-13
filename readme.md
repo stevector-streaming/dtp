@@ -43,7 +43,7 @@ jobs:
 
 ## Arguments
 
-In order to use the step supplied by this Action, the GitHub Workflow must have access to a machine token to interact with Pantheon's API and and a private key that will allow deployments to Pantheon and other operations.
+In order to use the step supplied by this Action, the GitHub Workflow must have access to [a token for authenticating with Pantheon's command line](https://docs.pantheon.io/machine-tokens) and [a private key](https://docs.pantheon.io/ssh-keys) that will allow deployments to Pantheon and other operations.
 Both of those values should be treated senstively and stored as [GitHub Secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
 
 The only other required argument is the machine name of the Pantheon site to which the code will be deployed.
@@ -55,15 +55,17 @@ The optional argument likely to be most commonly used is `delete_old_environment
 
 #### `ssh_key`
 
-A private key that corresponds to a public key on Pantheon: https://docs.pantheon.io/ssh-keys
+[A private key that corresponds to a public key on Pantheon](https://docs.pantheon.io/ssh-keys).
 
 
 #### `machine_token`
-A token for interacting with Pantheon's command line: https://docs.pantheon.io/machine-tokens
+
+[A token for authenticating with Pantheon's command line](https://docs.pantheon.io/machine-tokens).
 
 
 #### `site`
-The machine name of your Pantheon site
+
+The machine name of your Pantheon site.
 
 
 ### Optional Arguments
