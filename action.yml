@@ -175,8 +175,6 @@ runs:
           #!/bin/bash
           set +e
 
-          echo ${PANTHEON_CLONE_CONTENT_FLAG}
-
           if [ -n "$SITE_ROOT" ]; then
             cd ${SITE_ROOT}
           fi
