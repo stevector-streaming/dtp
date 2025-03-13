@@ -47,11 +47,14 @@ jobs:
 
 ## Arguments
 
+In order to use the step supplied by this Action, the GitHub Workflow must have access to a machine token to interact with Pantheon's API and and a private key that will allow deployments to Pantheon and other operations.
+Both of those values should be treated senstively and stored as [GitHub Secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
 
+The only other required argument is the machine name of the Pantheon site to which the code will be deployed.
 
+The optional argument likely to be most commonly used is `delete_old_environments` which will delete Multidev environments associated with closed pull requests after the deployment completes. Setting `delete_old_environments: true` is recommended for workflows that run after merges to the `main` branch to avoid accumulating Multidev environments that are no longer needed.
 
 ### Required Arguments
-
 
 ```yml
  ssh_key:
@@ -74,17 +77,21 @@ jobs:
 
 
 ```yml
+ delete_old_environments:
+   description: "If set to true, Multidev environments associated with closed pull requests will be deleted after deployment completes. It is recommended to set this parameter to true for workflows that run after merges to the main branch."
+   required: false
+   default: false
+   type: boolean
+
  target_env:
    description: 'The Pantheon environment to which the deployment will be made. If left blank, the value used will be automatically derived. Pull requests will deploy to environments named "pr-[NUMBER]" and main/master branch commits will deploy to the Pantheon "dev" environment'
    required: false
    default: ""
 
-
  source_env:
    description: "The environment from which the database and uploaded files will be copied."
    required: false
    default: "live"
-
 
  clone_content:
    description: "If set to true, the database and files directory will be re-cloned from the source environment. When set to false, this data is only copied upon Multidev creations. Setting this variable to true ensures fresh content but adds time to the build process that can be prohibitive for sites with large databases."
@@ -92,31 +99,20 @@ jobs:
    default: false
    type: boolean
 
-
- delete_old_environments:
-   description: "If set to true, Multidev environments associated with closed pull requests will be deleted after deployment completes. It is recommended to set this parameter to true for workflows that run after merges to the main branch."
-   required: false
-   default: false
-   type: boolean
-
-
  relative_site_root:
    description: "The root directory of the site to be deployed relative to the repository root. The vast majority of users of this action should leave this value unchanged from the default. The action will use this value to change directories after checking out the repo."
    required: false
    default: ""
-
 
  git_user_name:
    description: "The name to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
    required: false
    default: "GitHub Action Automation"
 
-
  git_user_email:
    description: "The email address to be used with the Git commit that will be pushed to Pantheon. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
    required: false
    default: "GitHubAction@example.com"
-
 
  git_commit_message:
    description: "A custom commit message to be used with the Git commit that will be pushed to Pantheon. Leaving this Action parameter blank will result in a generic commit message being used. This value is not used on newer 'eVCS' sites for which there is no Pantheon-provided Git Repo"
