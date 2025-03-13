@@ -24,20 +24,20 @@ TODO - Diagram
 
 This action provides a step that can be used as the only step within a job.
 More complex examples further below show additional steps and jobs used in conjunction with this action.
-Here is the beginning of a `jobs` section of [a real `.github/workflows/deploy-pr.yml` file](https://github.com/stevector/stevector-composed/blob/c93aef3a96f29054772486bafa9a3b805065003b/.github/workflows/deploy-pr.yml) that deploys a site to Pantheon when triggered by a Pull Request.
+Here is the beginning of a `jobs` section of [a real `.github/workflows/deploy-pr.yml` file](https://github.com/stevector/stevector-composed/blob/6a1c0183ef6e429761fcc090c34cfcc2dcd7c573/.github/workflows/deploy-pr.yml) that deploys a site to Pantheon when triggered by a Pull Request.
 
 
 ```
 jobs:
- build:
-   runs-on: ubuntu-latest
-   steps:
-   - name: Deploy to Pantheon
-     uses: stevector-streaming/dtp@0.2.0
-     with:
-       ssh_key: ${{ secrets.PANTHEON_SSH_KEY }}
-       machine_token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
-       site: ${{ vars.PANTHEON_SITE }}
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Pantheon
+      uses: stevector-streaming/dtp@0.2.1
+      with:
+        ssh_key: ${{ secrets.PANTHEON_SSH_KEY }}
+        machine_token: ${{ secrets.TERMINUS_MACHINE_TOKEN }}
+        site: ${{ vars.PANTHEON_SITE }}
 ```
 
 
