@@ -10,7 +10,7 @@ When running workflow triggered by a pull request, this action will create a [Mu
 
 When running on workflows triggered by merges/pushes to the `main` branch this action will deploy code to [the Pantheon `Dev` environment](https://docs.pantheon.io/pantheon-workflow).
 
-![Deploying main to Pantheon](.github/documentation/diagram--deploying-main.png)
+![Deploying main to Pantheon](.github/documentation/diagram--pushing-main.png)
 
 ## Basic Usage
 
