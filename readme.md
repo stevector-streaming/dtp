@@ -188,14 +188,14 @@ In this example, coding standards checks are run in parallel with the deployment
 
 Here is an example from a real site that runs a coding standards check in parallel to the deployment job.
 
-![Parallel and Serial Jobs](.github/documentation/parallel-and-serial-jobs.jpg)
+![Parallel and Serial Jobs](.github/documentation/parallel-and-serial-jobs.png)
 
 Here is how those jobs are defined in an example site's `.github/workflows/deploy-pr.yml` file:
 
 ```yml
 
 jobs:
-  deploy:
+  push-to-pantheon:
     runs-on: ubuntu-latest
     steps:
     - name: Deploy to Pantheon
@@ -215,7 +215,7 @@ jobs:
       run: composer run cs
 
   playwright:
-    needs: deploy
+    needs: push-to-pantheon
     runs-on: ubuntu-latest
     steps:
     - name: Check out the repository
